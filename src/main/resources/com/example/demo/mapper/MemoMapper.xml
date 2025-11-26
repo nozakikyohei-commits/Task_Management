@@ -1,3 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.mapper.MemoMapper"></mapper>
+<mapper namespace="com.example.demo.mapper.MemoMapper">
+
+	<!-- DB上のカラム名とjava側の変数名のすり合わせを行う -->
+	<resultMap type="com.example.demo.entity.User" id="UserResultMap">
+		
+		<!-- 主キーのマッピング -->
+		<id column="memo_id" property="memoId"/>
+		
+		<!-- 通常カラムのマッピング -->
+		<result column="user_id" property="userId"/>
+		<result column="content" property="content"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="updated_at" property="updatedAt"/>
+		
+		<!-- association,collectionは必要に応じて書き加える -->
+	
+	</resultMap>
+
+</mapper>
