@@ -20,5 +20,15 @@
 	
 	</resultMap>
 	
+ 		<select id="findByMailAddress" resultType="com.example.demo.entity.User" resultMap="UserResultMap">
+		
+			SELECT
+					*
+			FROM
+					users
+			WHERE
+					mail_address = #{mailAddress}
+		
+		</select>
 
 </mapper>
