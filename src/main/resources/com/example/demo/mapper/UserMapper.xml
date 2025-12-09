@@ -30,5 +30,20 @@
 					mail_address = #{mailAddress}
 		
 		</select>
+		
+		<insert id="create">
+		
+			INSERT INTO users(
+					name,
+					mail_address,
+					password
+			) VALUES (
+			<!-- #{〇〇}でフォーム上の〇〇というフィールド名のパラメータを反映 -->
+					#{name},
+					#{mailAddress},
+					#{password}
+			)
+		
+		</insert>
 
 </mapper>

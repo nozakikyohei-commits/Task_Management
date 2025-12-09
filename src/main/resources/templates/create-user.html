@@ -10,7 +10,49 @@
 	<body>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 	
-		<h1>ユーザー新規登録</h1>
+		<div class="text-center my-5">
+			
+			<!-- URLにエラーがついている場合（ログインに失敗して/login?errorにリダイレクトした場合）エラーメッセージを表示 -->
+			<div th:if="${param.error}" class="alert alert-danger">
+    			<span>ユーザー登録に失敗しました</span>
+			</div>
+		
+			<h1>ユーザー新規登録ページ</h1>
+			
+				<div class="form-body">
+					
+					<form th:action="@{/create-user}" th:object="${form}" method="post">
+						
+						<div class="my-5">
+							
+							<label for="userName" class="fw-bold form-label mt-5">ユーザー名</label>
+							<input id="userName" class="form-control w-25 mx-auto" type="text" th:field="*{name}" th:errorclass="is-invalid"/>
+							<div class="invalid-feedback" th:errors="*{name}"></div>
+							
+							<label for="mailAddress" class="fw-bold form-label mt-5">メールアドレス</label>
+							<input id="mailAddress" class="form-control w-25 mx-auto" type="email" th:field="*{mailAddress}" th:errorclass="is-invalid"/>
+							<div class="invalid-feedback" th:errors="*{mailAddress}"></div>
+							
+							<label for="password"  class="fw-bold form-label mt-5">パスワード</label>
+							<input id="password" class="form-control w-25 mx-auto" type="password" th:field="*{password}" th:errorclass="is-invalid"
+									th:classappend="${#fields.hasErrors('passwordValid')} ? 'is-invalid'"/>
+							<div class="invalid-feedback" th:errors="*{password}"></div>
+							
+							<label for="passwordConfirmation"  class="fw-bold form-label mt-5">パスワード確認用</label>
+							<input id="passwordConfirmation" class="form-control w-25 mx-auto" type="password"
+									th:field="*{passwordConfirmation}"
+									th:classappend="${#fields.hasErrors('passwordValid')} ? 'is-invalid'"/>
+							<div class="invalid-feedback" th:errors="*{passwordValid}"></div>
+							
+							<button class="btn btn-primary mt-5" type="submit">登録</button>
+							
+						</div>
+						
+					</form>
+					
+				</div>
+			
+		</div>
 	
 	</body>
 </html>
