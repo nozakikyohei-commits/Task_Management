@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.constant.AppConst;
 import com.example.demo.form.RegistUserForm;
 import com.example.demo.service.UserService;
 
@@ -20,13 +21,13 @@ public class UserController {
 	
 	public final UserService userService;
 	
-	@GetMapping("/create-user")
+	@GetMapping(AppConst.Url.CREATE_USER)
 	public String view(Model model) {
 		model.addAttribute("form", new RegistUserForm());	//html側でユーザー登録フォームを"form"という名前で使えるようにセット
-		return "create-user";
+		return AppConst.View.CREATE_USER;
 	}
 	
-	@PostMapping("/create-user")
+	@PostMapping(AppConst.Url.CREATE_USER)
 	public String create(@Valid @ModelAttribute("form") RegistUserForm form, BindingResult result, 
 													RedirectAttributes redirectAttributes, Model model) {
 		
@@ -38,7 +39,7 @@ public class UserController {
 		if (result.hasErrors()) {
 			//フォワード処理：リクエストを飛ばすのではなく、create-user.htmlというテンプレートを使って画面を作りなおす
 			//リクエストはそのままに画面を作り直すだけであり、modelの中身は変わらないので元の入力値は表示されたままになる
-			return "create-user";
+			return AppConst.View.CREATE_USER;
 		}
 		
 		userService.create(form);
@@ -46,7 +47,7 @@ public class UserController {
 		redirectAttributes.addFlashAttribute("mailAddress", form.getMailAddress());	//リダイレクト先に入力値を渡すための処理
 		
 		//リダイレクト処理：下記のURLにGETリクエストを送る
-		return "redirect:/login";
+		return "redirect:" + AppConst.Url.LOGIN;
 		
 	}
 

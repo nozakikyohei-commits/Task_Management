@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.demo.constant.AppConst;
 import com.example.demo.entity.User;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // roleフィールドの値によって権限を切り替える
         // 0:一般、1:管理者
-        String roleName = user.getRole() == 1 ? "ROLE_ADMIN" : "ROLE_GENERAL";
+        String roleName = user.getRole() == AppConst.UserRole.ADMIN ? "ROLE_ADMIN" : "ROLE_GENERAL";
         
         // Spring Securityが理解できる形（List<GrantedAuthority>）にして返す
         return List.of(new SimpleGrantedAuthority(roleName));

@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.constant.AppConst;
 import com.example.demo.form.LoginForm;
 
 @Controller
-@RequestMapping("/login")
+@RequestMapping(AppConst.Url.LOGIN)
 public class LoginController {
 	
 	@GetMapping
@@ -17,7 +18,7 @@ public class LoginController {
 		LoginForm form = new LoginForm();
 		model.addAttribute("form", form);	//html側でログインフォームを"form"という名前で使えるようにセット
 		form.setMailAddress(mailAddress);	//ユーザー新規登録画面で入力したメールアドレスを受け取ってformにセット
-		return "login";
+		return AppConst.View.LOGIN;
 	}
 
 }
