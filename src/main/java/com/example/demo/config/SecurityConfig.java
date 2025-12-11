@@ -28,7 +28,7 @@ public class SecurityConfig {
 		).logout(logout -> logout
 				//.logoutRequestMatcher(new AntPathRequestMatcher("/logout**"))
 				//.logoutSuccessUrl("/")
-				.logoutUrl("login?logout") //ログアウト時に投げるURLを設定
+				.logoutUrl(AppConst.Url.LOGOUT) //ログアウト時に投げるURLを設定
 				.invalidateHttpSession(true)
 				.deleteCookies("JSESSIONID")
 				.permitAll()

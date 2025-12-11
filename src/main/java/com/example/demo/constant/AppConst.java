@@ -5,6 +5,7 @@ public class AppConst {
 	public static class Url {
 		public static final String DEFAULT = "/";
 		public static final String LOGIN = "/login";
+		public static final String LOGOUT = "/logout";
 		public static final String CREATE_USER = "/create-user";
 		public static final String EDIT_USER = "/edit-user";
 		public static final String CREATE_TASK = "/create-task";
