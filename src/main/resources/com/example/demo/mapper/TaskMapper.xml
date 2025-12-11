@@ -22,5 +22,68 @@
 		<!-- association,collectionは必要に応じて書き加える -->
 	
 	</resultMap>
+	
+		<select id="getByUserId" resultType="com.example.demo.entity.Task" resultMap="TaskResultMap">
+		
+			SELECT
+					*
+			FROM
+					tasks
+			WHERE
+					user_id = #{userId}
+			ORDER BY
+					created_at
+		
+		</select>
+		
+		<select id="getIncompleteTasksByUserId" resultType="com.example.demo.entity.Task" resultMap="TaskResultMap">
+		
+			SELECT
+					*
+			FROM
+					tasks
+			WHERE
+					user_id = #{userId}
+			AND
+					status IN (0, 2)
+			ORDER BY
+					created_at
+		
+		</select>
+		
+		<update id="updateStatusToExpired">
+		
+    		UPDATE
+    				tasks
+    		SET
+    				status = 2
+    		WHERE
+    				user_id = #{userId}
+    		AND
+    				status = 0
+    		AND
+    				deadline &lt; CURRENT_DATE
+    				
+    	</update>
+    	
+    	<update id="updateStatusToCompleted">
+    	
+    		UPDATE
+    				tasks
+    		SET
+    				completed_at = CURRENT_TIMESTAMP,
+    				status = CASE
+    			WHEN
+    				deadline &lt; CURRENT_DATE THEN 3
+    			WHEN
+    				deadline &gt;= CURRENT_DATE THEN 1
+    		END
+    		
+    		WHERE
+    				task_id = #{taskId}
+    		AND
+        			user_id = #{userId}
+    	
+    	</update>
 
 </mapper>
