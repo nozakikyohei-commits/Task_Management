@@ -1,0 +1,65 @@
+<header xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+		th:fragment="header_fragment"
+		th:with="url=${T(com.example.demo.constant.AppConst.Url)}">	<!-- html内で使用する変数を定義。変数ファイルからURLをもってくるための記述 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+	<!--　navbar-expand-sm：画面がスマホサイズの場合はハンバーガーメニューで表示
+		　navbar-toggler：ハンバーガーメニューとなっている際に「ここを開閉ボタンとする」と指定するための記述
+		　data-bs-toggle="collapse"：「このボタンを押したら、何かを折りたたんで」と指示するための記述
+		　data-bs-target="#Menu"：「折りたたむのはMenuというIDをもつ要素である」と指定するための記述　-->
+	<nav class="navbar navbar-expand-sm navbar-secondary bg-secondary mt-3 mb-3">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#Menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand mx-4">メニュー</a>
+        <!--　collapse：「基本は折りたたまれた状態にして」と指示するための記述
+        	　navbar-collapse：開閉時に動きをもたせるための記述　-->
+        <div id="Menu" class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+					<!--現在のURLが指定したものと同じなら特定のクラスを付与する（目立つよう表示させる）-->
+                    <a class="nav-link"
+                       th:href="@{${url.VIEW_TASKS}}"
+                       th:classappend="${currentUri == url.VIEW_TASKS} ? 'active fw-bold text-white'">
+                       タスク表示画面</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                    th:href="@{${url.CREATE_TASK}}"
+                    th:classappend="${currentUri == url.CREATE_TASK} ? 'active fw-bold text-white'">
+                    タスク作成画面</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{${url.EDIT_USER}}"
+                       th:classappend="${currentUri == url.EDIT_USER} ? 'active fw-bold text-white'">
+                       アカウント編集画面</a>
+                </li>
+                
+                <!--ログインユーザーの権限をチェックし、ROLE_ADMINをもっていれば表示
+                	（hasRoleで指定するとSpringSecurityがロールチェックであると判断し、頭に"ROLE_"を自動でつけて検索をかけてくれる-->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">	
+                    <a class="nav-link"
+                       th:href="@{${url.VIEW_ALL_USERS}}"
+                       th:classappend="${currentUri == url.VIEW_ALL_USERS} ? 'active fw-bold text-white'">
+                       ユーザー管理画面</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link"
+                       th:href="@{${url.VIEW_ALL_TASKS}}"
+                       th:classappend="${currentUri == url.VIEW_ALL_TASKS} ? 'active fw-bold text-white'">
+                       全タスク表示画面</a>
+                </li>
+                
+                <li class="nav-item">
+                	<form th:action="@{/logout}" method="post">
+    					<input class="nav-link" type="submit" name="logout" value="ログアウト"/>
+					</form>
+                </li>
+            </ul>
+            <span class="bg-danger text-white" th:if="${param.error}">無効なアクセスです</span>
+        </div>
+    </nav>
+
+</header>
