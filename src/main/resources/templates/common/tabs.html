@@ -1,0 +1,31 @@
+<ul th:fragment="task_tabs(currentTab)" 
+    class="nav nav-tabs mb-3" 
+    th:with="url=${T(com.example.demo.constant.AppConst.Url)}">
+
+    <li class="nav-item">
+        <a class="nav-link" 
+           th:href="@{${url.VIEW_TASKS}(tab='incomplete')}"
+           th:classappend="${currentTab == 'incomplete'} ? 'active fw-bold'">
+           未完了
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" 
+           th:href="@{${url.VIEW_TASKS}(tab='completed')}"
+           th:classappend="${currentTab == 'completed'} ? 'active fw-bold'">
+           完了済み
+        </a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link" 
+           th:href="@{url.VIEW_TASKS_CALENDAR}"
+           th:classappend="${currentTab == 'calendar'} ? 'active'">カレンダー</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" 
+           th:href="@{url.VIEW_TASKS_MEMOS}"
+           th:classappend="${currentTab == 'memos'} ? 'active'">メモ</a>
+    </li>
+</ul>

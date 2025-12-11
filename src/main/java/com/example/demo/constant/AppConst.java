@@ -11,6 +11,8 @@ public class AppConst {
 		public static final String CREATE_TASK = "/create-task";
 		public static final String EDIT_TASK = "/edit-task";
 		public static final String VIEW_TASKS = "/view-tasks";
+		public static final String VIEW_TASKS_CALENDAR = "/view-tasks-calendar";
+		public static final String VIEW_TASKS_MEMOS = "/view-tasks-memos";
 		public static final String VIEW_ALL_TASKS = "/view-all-tasks";
 		public static final String VIEW_ALL_USERS = "/view-all-users";
 	}
@@ -22,6 +24,8 @@ public class AppConst {
 		public static final String CREATE_TASK = "create-task";
 		public static final String EDIT_TASK = "edit-task";
 		public static final String VIEW_TASKS = "view-tasks";
+		public static final String VIEW_TASKS_CALENDAR = "view-tasks-calendar";
+		public static final String VIEW_TASKS_MEMOS = "view-tasks-memos";
 		public static final String VIEW_ALL_TASKS = "view-all-tasks";
 		public static final String VIEW_ALL_USERS = "view-all-users";
 	}
