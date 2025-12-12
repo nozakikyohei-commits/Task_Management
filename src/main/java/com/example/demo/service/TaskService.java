@@ -15,14 +15,19 @@ public class TaskService {
 	
 	private final TaskMapper taskMapper;
 	
-	public List<Task> getByUserId(int userId) {
+	public List<Task> getTasksForCalendar(int userId) {
 		
-		return taskMapper.getByUserId(userId);
+		return taskMapper.getTasksForCalendar(userId);
 	}
 	
-	public List<Task> getIncompleteTasksByUserId(int userId) {
+	public List<Task> getIncompleteTasksByUserId(int userId, String sort, String order) {
 		
-		return taskMapper.getIncompleteTasksByUserId(userId);
+		return taskMapper.getIncompleteTasksByUserId(userId, sort, order);
+	}
+	
+	public List<Task> getCompletedTasksByUserId(int userId, String sort, String order) {
+		
+		return taskMapper.getCompletedTasksByUserId(userId, sort, order);
 	}
 	
 	public void updateStatusToExpired(int userId) {
@@ -31,6 +36,10 @@ public class TaskService {
 	
 	public void updateStatusToCompleted(int taskId, int userId) {
 		taskMapper.updateStatusToCompleted(taskId, userId);
+	}
+	
+	public void updateStatusToIncompleted(int taskId, int userId) {
+		taskMapper.updateStatusToIncompleted(taskId, userId);
 	}
 
 }
