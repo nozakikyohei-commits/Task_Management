@@ -20,12 +20,12 @@
     
     <li class="nav-item">
         <a class="nav-link" 
-           th:href="@{url.VIEW_TASKS_CALENDAR}"
+           th:href="@{${url.VIEW_TASKS_CALENDAR}}"
            th:classappend="${currentTab == 'calendar'} ? 'active'">カレンダー</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" 
-           th:href="@{url.VIEW_TASKS_MEMOS}"
+           th:href="@{${url.VIEW_TASKS_MEMOS}}"
            th:classappend="${currentTab == 'memos'} ? 'active'">メモ</a>
     </li>
 </ul>
