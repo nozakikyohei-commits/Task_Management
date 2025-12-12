@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.fc-event.expired-task-border {
+    /* 色はJSがインラインスタイルで当てるので、CSSでは触りません */
+    
+    /* 種類：実線（これを書かないと表示されません！） */
+    border-style: solid !important;
+    
+    /* 太さ：3px */
+    border-width: 3px !important;
+}

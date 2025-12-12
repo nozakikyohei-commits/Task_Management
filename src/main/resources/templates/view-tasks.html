@@ -5,6 +5,17 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>タスク表示画面</title>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+		<style>
+			/* リンクだけど黒文字で下線なしにするスタイル */
+			.sort-link {
+				color: black;
+				text-decoration: none;
+				display: block; /* セル全体をクリックしやすく */
+			}
+			.sort-link:hover {
+				color: #0d6efd; /* マウスを乗せたら青くする */
+			}
+		</style>
 	</head>
 	
 	<body>
@@ -13,29 +24,104 @@
 		<header th:replace="~{common/header :: header_fragment}"></header>
 		
 		<main>
-			<div class="mx-2">
-			<h1 class="mt-4">タスク一覧</h1>
-		
-			<table class="text-center table table-striped table-bordered">
-				<tr>
-					<th>タスク名</th>
-					<th>重要度</th>
-					<th>期限</th>
-					<th>完了ボタン</th>
-				</tr>
+			<!--mainタグ内で使用できる変数を設定（インナークラスまで設定する必要あり）-->
+			<div class="mx-2" 
+				 th:with="url=${T(com.example.demo.constant.AppConst.Url)},
+				 		  importance=${T(com.example.demo.constant.AppConst.TaskImportance)},
+				 		  status=${T(com.example.demo.constant.AppConst.TaskStatus)}">
 			
-				<tr th:each="task : ${incompletedTasks}">
-					
-					<td th:text="${task.name}"><a th:href="@{|/edit-task/${task.taskId}|}"></a></td>
-					<td th:text="${task.importance}"></td>
-					<td th:text="${task.deadline}"></td>
-					<td>
-						<form th:action="@{|view-tasks/${task.taskId}/complete|}" method="post">
-							<button class="btn btn-primary" type="submit">完了</button>
-						</form>
-					</td>
-					
-				</tr>
+			<h1 class="mt-4">タスク一覧</h1>
+			
+			<div th:replace="~{common/tabs :: task_tabs(${currentTab})}"></div>
+			
+			<table class="text-center table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>タスク名</th> 
+						<th>
+							<!--リクエストパラメータに現在のタブ、何を基準にするか、（現在のパラメータを参照し）昇順・降順どちらにするかを持たせコントローラーに送る-->
+							<a class="sort-link"
+							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='deadline', order=${currentSort == 'deadline' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+								期限
+								<!--現在の並び方が昇順か降順かわかりやすいよう表示をしておく-->
+								<span th:if="${currentSort == 'deadline'}" 
+									  th:text="${currentOrder == 'asc' ? '▲' : '▼'}"></span>
+							</a>
+						</th>
+
+						<th>
+							<a class="sort-link"
+							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='importance', order=${currentSort == 'importance' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+								重要度
+								<span th:if="${currentSort == 'importance'}" 
+									  th:text="${currentOrder == 'asc' ? '▲' : '▼'}"></span>
+							</a>
+						</th>
+
+						<th>
+							<a class="sort-link"
+							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='status', order=${currentSort == 'status' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+								状態
+								<span th:if="${currentSort == 'status'}" 
+									  th:text="${currentOrder == 'asc' ? '▲' : '▼'}"></span>
+							</a>
+						</th>
+
+						<th>操作</th>
+            			
+						<th th:if="${currentTab == 'completed'}">
+							<a class="sort-link"
+							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='completedAt', order=${currentSort == 'completedAt' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+								完了日
+								<span th:if="${currentSort == 'completedAt'}" 
+									  th:text="${currentOrder == 'asc' ? '▲' : '▼'}"></span>
+							</a>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="task : ${tasks}">
+						
+						<td>
+							<!--各タスクの編集画面に遷移できるよう、リクエストパラメータにタスクIDを持たせる-->
+							<a th:href="@{|${url.EDIT_TASK}/${task.taskId}|}" 
+							   th:text="${task.name}" 
+							   class="text-decoration-none text-dark">
+							</a>
+						</td>
+						
+						<td th:text="${task.deadline}"></td>
+						<td>
+							<span th:if="${task.importance == importance.UNSET}">指定なし</span>
+							<span th:if="${task.importance == importance.LOW}">低</span>
+							<span th:if="${task.importance == importance.MEDIUM}">中</span>
+							<span th:if="${task.importance == importance.HIGH}">高</span>
+						</td>
+						<td>
+							<span th:if="${task.status == status.INCOMPLETE}" class="badge bg-success">未完了</span>
+			                <span th:if="${task.status == status.COMPLETED}" class="badge bg-success">期限内完了</span>
+			                <span th:if="${task.status == status.EXPIRED}" class="badge bg-danger">期限切れ</span>
+			                <span th:if="${task.status == status.EXPIRED_COMPLETED}" class="badge bg-warning text-dark">期限切れ完了</span>
+			            </td>
+						<td>
+							<!--現在のタブを参照してボタンの表示、送るURLを変更する-->
+							<span th:if="${currentTab == 'incomplete'}">
+								<form th:action="@{|${url.VIEW_TASKS}/${task.taskId}/complete|}" method="post">
+									<button class="btn btn-primary" type="submit">完了</button>
+								</form>
+							</span>
+							
+							<span th:if="${currentTab == 'completed'}">
+								<form th:action="@{|${url.VIEW_TASKS}/${task.taskId}/incomplete|}" method="post">
+									<button class="btn btn-secondary" type="submit">未完了に戻す</button>
+								</form>
+							</span>
+						</td>
+						<td th:if="${currentTab == 'completed'}" th:text="${task.completedAt}"></td>
+						
+					</tr>
+				</tbody>
+			</table>
 			</div>
 		</main>
 	</body>
