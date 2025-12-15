@@ -2,18 +2,23 @@ package com.example.demo.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.User;
 import com.example.demo.form.RegistUserForm;
+import com.example.demo.mapper.MemoMapper;
 import com.example.demo.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 	
 	private final UserMapper userMapper;
+	
+	private final MemoMapper memoMapper;
 	
 	//フォームに入力されたメールアドレスが既に使用されたものであるかを確認するメソッド
 	public boolean checkMailAddress(String mailAddress) {
@@ -23,8 +28,9 @@ public class UserService {
 		return user != null;
 	}
 	
+	@Transactional(readOnly = false)
 	//フォームに入力された「名前」「メールアドレス」「パスワード」を使用して新規ユーザーをDB上に作成するメソッド
-	public int create(RegistUserForm form) {
+	public void create(RegistUserForm form) {
 		
 		User user = new User();
 		
@@ -34,7 +40,11 @@ public class UserService {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(form.getPassword()));
 		
-		return userMapper.create(user);
+		//以下のメソッドでユーザーを作成した際、xml側の記述により作成したユーザーのIDをuserIdにセット
+		userMapper.create(user);
+		
+		//xml側から受け取った値をもとにメモを作成
+		memoMapper.create(user.getUserId());
 	}
 
 }

@@ -31,7 +31,8 @@
 		
 		</select>
 		
-		<insert id="create">
+		<!-- データを作成した際に、自動採番でDBに登録された値をjava側のオブジェクトに渡す（オブジェクトのどの値かはkeyPropertyで設定） -->
+		<insert id="create" useGeneratedKeys="true" keyProperty="userId">
 		
 			INSERT INTO users(
 					name,

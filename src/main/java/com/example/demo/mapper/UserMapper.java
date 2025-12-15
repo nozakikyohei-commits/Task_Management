@@ -12,5 +12,5 @@ public interface UserMapper {
 	User findByMailAddress(String mailAddress);
 	
 	//ユーザー新規登録をするためのメソッド
-	int create(User user);
+	void create(User user);
 }

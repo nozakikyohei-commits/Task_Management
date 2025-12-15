@@ -3,7 +3,7 @@
 <mapper namespace="com.example.demo.mapper.MemoMapper">
 
 	<!-- DB上のカラム名とjava側の変数名のすり合わせを行う -->
-	<resultMap type="com.example.demo.entity.User" id="UserResultMap">
+	<resultMap type="com.example.demo.entity.Memo" id="MemoResultMap">
 		
 		<!-- 主キーのマッピング -->
 		<id column="memo_id" property="memoId"/>
@@ -17,5 +17,39 @@
 		<!-- association,collectionは必要に応じて書き加える -->
 	
 	</resultMap>
+	
+		<select id="getByUserId" resultType="com.example.demo.entity.Memo" resultMap="MemoResultMap">
+		
+			SELECT
+					*
+			FROM
+					memos
+			WHERE
+					user_id = #{userId}
+		
+		</select>
+		
+		<insert id="create">
+		
+			INSERT INTO memos(
+					user_id
+			) VALUES (
+					#{userId}
+			)
+		
+		</insert>
+		
+		<update id="update">
+		
+			UPDATE
+					memos
+			SET
+					content = #{content}
+			WHERE
+					memo_id = #{memoId}
+			AND
+					user_id = #{userId}
+		
+		</update>
 
 </mapper>
