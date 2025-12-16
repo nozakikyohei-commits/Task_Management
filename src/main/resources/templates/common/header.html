@@ -20,9 +20,9 @@
                 <li class="nav-item">
 					<!--現在のURLが指定したものと同じなら特定のクラスを付与する（目立つよう表示させる）-->
                     <a class="nav-link"
-                       th:href="@{${url.VIEW_TASKS}}"
-                       th:classappend="${currentUri == url.VIEW_TASKS} ? 'active fw-bold text-white'">
-                       タスク表示画面</a>
+					   th:href="@{${url.VIEW_TASKS}}"
+					   th:classappend="${currentUri == url.VIEW_TASKS or currentUri == url.VIEW_TASKS_CALENDAR or currentUri == url.VIEW_TASKS_MEMOS} ? 'active fw-bold text-white'">
+					   タスク表示画面</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
