@@ -3,15 +3,15 @@
 document.addEventListener('DOMContentLoaded', function() {
   
   //カレンダーを表示する場所を指定（html側でid=calendarの要素を指定）
-  var calendarEl = document.getElementById('calendar');
+  const calendarEl = document.getElementById('calendar');
   
   //配列taskListの中身一つ一つに{}内の加工処理を行って、新たな配列を作成する
-  var calendarEvents = taskList.map(function(task) {
+  const calendarEvents = taskList.map(function(task) {
     
     //オブジェクト定義（return内）にはキーと値のペアしか書けないため、条件によって値を変更する際は先に準備して変数を渡すだけの状態にしておく
     
     //色を決める変数を定義
-    var eventColor = 'gray';
+    let eventColor = 'gray';
 
     //重要度に応じて変数の中身（色）を変更
     switch(task.importance) {
@@ -28,12 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
             eventColor = 'gray';
     }
     
-    var borderColor = 'transparent';	//初期値（透明）
+    let borderColor = 'transparent';	//初期値（透明）
     
-    var eventClassNames = [];	//初期値（空配列）
+    let eventClassNames = [];	//初期値（空配列）
     
     //表示タイトルを決めるための変数を定義
-    var eventTitle = task.name;
+    let eventTitle = task.name;
 
     // status: 2 (期限切れ) の場合に表示を変更する
     if (task.status === 2) {
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   });
 
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  const calendar = new FullCalendar.Calendar(calendarEl, {
 	//FullCalendarで設定されている「月表示モード」を選択
     initialView: 'dayGridMonth',
     //上で詰めたデータを渡す

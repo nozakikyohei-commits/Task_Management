@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.authentication.CustomUserDetails;
 import com.example.demo.constant.AppConst;
+import com.example.demo.entity.Memo;
 import com.example.demo.entity.User;
+import com.example.demo.form.EditMemoForm;
+import com.example.demo.service.MemoService;
 import com.example.demo.service.TaskService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,11 @@ public class TaskController {
 	
 	public final TaskService taskService;
 	
+	public final MemoService memoService;
+	
+	/*
+	 * タスク表示画面の表示
+	 */
 	@GetMapping(AppConst.Url.VIEW_TASKS)
 	//@AuthenticationPrincipalアノテーションにより、ログイン時にSpringSecurityがCustomUserDetailsに保存したユーザー情報を取り出す
 	public String viewTasks(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -49,6 +57,9 @@ public class TaskController {
 		return AppConst.View.VIEW_TASKS;
 	}
 	
+	/*
+	 * 「完了」ボタン押下によるステータス変更
+	 */
 	@PostMapping(AppConst.Url.VIEW_TASKS + "/{taskId}/complete")
 	public String updateTaskStatusToCompleted(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
@@ -57,6 +68,9 @@ public class TaskController {
 		return "redirect:" + AppConst.Url.VIEW_TASKS + "?tab=completed";
 	}
 	
+	/*
+	 * 「未完了に戻す」ボタンによるステータス変更
+	 */
 	@PostMapping(AppConst.Url.VIEW_TASKS + "/{taskId}/incomplete")
 	public String updateTaskStatusToIncompleted(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
@@ -65,8 +79,11 @@ public class TaskController {
 		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}
 	
+	/*
+	 * カレンダー表示画面の表示
+	 */
 	@GetMapping(AppConst.Url.VIEW_TASKS_CALENDAR)
-	public String view(@AuthenticationPrincipal CustomUserDetails userDetails,
+	public String viewCalendar(@AuthenticationPrincipal CustomUserDetails userDetails,
 						Model model) {
 		
 		User loginUser = userDetails.getUser();
@@ -74,9 +91,47 @@ public class TaskController {
 		taskService.updateStatusToExpired(loginUser.getUserId());
 		
 		model.addAttribute("tasks", taskService.getTasksForCalendar(userDetails.getUser().getUserId()));
-		model.addAttribute("user", userDetails.getUser());
+		model.addAttribute("user", loginUser);
 		
 		return AppConst.View.VIEW_TASKS_CALENDAR;
 	}
+	
+	/*
+	 * メモ表示画面の表示
+	 */
+	@GetMapping(AppConst.Url.VIEW_TASKS_MEMOS)
+	public String viewMemo(@AuthenticationPrincipal CustomUserDetails userDetails,
+							EditMemoForm form,
+							Model model) {
+		
+		User loginUser = userDetails.getUser();
+		Memo memo = memoService.getByUserId(loginUser.getUserId());
+		form.setContent(memo.getContent());
+		
+		model.addAttribute("user", loginUser);
+		model.addAttribute("memo", memo);
+		model.addAttribute("form", form);
+		
+		return AppConst.View.VIEW_TASKS_MEMOS;
+	}
+	
+	/* 
+	 * メモ更新
+	 * [キー（htmlのname属性）：content、値：卵、牛乳、小麦粉]というようなデータが送られてくる
+	 * 引数に設定してあるform（今回はEditMemoForm）内のフィールド名と同じキー名をもつデータ（今回はcontent）を探し、自動でform.set○○を行ってくれる
+	 */
+	@PostMapping(AppConst.Url.VIEW_TASKS_MEMOS + "/{memoId}")
+	public String updateMemo(@PathVariable int memoId, @AuthenticationPrincipal CustomUserDetails userDetails,
+								EditMemoForm form, Model model) {
+		
+		memoService.update(form.getContent(), memoId, userDetails.getUser().getUserId());
+		
+		return "redirect:" + AppConst.Url.VIEW_TASKS_MEMOS;
+	}
+	
+	/*
+	 * タスク編集画面の表示
+	 */
+	@GetMapping(AppConst.Url.EDIT_TASK + "/")
 
 }
