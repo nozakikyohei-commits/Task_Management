@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -13,11 +13,11 @@ public class Task {
 	private String name;
 	private String content;
 	private int importance;
-	private Date deadline;
+	private LocalDate deadline;
 	private int status;
-	private Timestamp completedAt;
-	private Timestamp createdAt;
-	private Timestamp updatedAt;
+	private LocalDate completedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 	
 	private User user;
 

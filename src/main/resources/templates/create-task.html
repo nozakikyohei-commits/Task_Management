@@ -10,5 +10,57 @@
 	<body>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 
+		<header th:replace="~{common/header :: header_fragment}"></header>
+		
+		<main>
+			
+			<div class="text-center my-5">
+				
+				<div th:if="${param.error}" class="alert alert-danger">
+	    			<span>タスク作成に失敗しました</span>
+				</div>
+				
+				<h1>タスク作成ページ</h1>
+				
+					<div class="form-body"
+						 th:with="url=${T(com.example.demo.constant.AppConst.Url)},
+				 		  		  importance=${T(com.example.demo.constant.AppConst.TaskImportance)}">
+						
+						<form th:action="@{${url.CREATE_TASK}}" th:object="${form}" method="post">
+							
+							<div class="my-2">
+								
+								<label for="taskName" class="fw-bold form-label mt-5">タスク名</label>
+								<input id="taskName" class="form-control w-25 mx-auto" type="text" th:field="*{name}" th:errorclass="is-invalid"/>
+								<div class="invalid-feedback" th:errors="*{name}"></div>
+								
+								<label for="content" class="fw-bold form-label mt-5">詳細</label>
+								<textarea id="content" class="form-control w-50 mx-auto" th:field="*{content}" th:errorclass="is-invalid"></textarea>
+								<div class="invalid-feedback" th:errors="*{content}"></div>
+								
+								<label for="importance" class="fw-bold form-label mt-5">重要度</label>
+								<select id="importance"  class="form-control w-25 mx-auto" th:field="*{importance}" th:errorclass="is-invalid">
+									<option th:value="${importance.UNSET}" selected>指定なし</option>
+									<option th:value="${importance.LOW}">低</option>
+									<option th:value="${importance.MEDIUM}">中</option>
+									<option th:value="${importance.HIGH}">高</option>
+								</select>
+								<div class="invalid-feedback" th:errors="*{importance}"></div>
+								
+								<label for="deadline" class="fw-bold form-label mt-5">期限</label>
+								<input id="deadline" class="form-control w-25 mx-auto" type="date" th:field="*{deadline}" th:errorclass="is-invalid"/>
+								<div class="invalid-feedback" th:errors="*{deadline}"></div>
+								
+								<button class="btn btn-primary mt-5" type="submit">登録</button>
+								
+							</div>
+							
+						</form>
+						
+					</div>
+				
+			</div>
+			
+		</main>
 	</body>
 </html>

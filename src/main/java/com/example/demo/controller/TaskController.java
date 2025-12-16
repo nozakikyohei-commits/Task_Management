@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +14,13 @@ import com.example.demo.authentication.CustomUserDetails;
 import com.example.demo.constant.AppConst;
 import com.example.demo.entity.Memo;
 import com.example.demo.entity.User;
+import com.example.demo.form.CreateTaskForm;
 import com.example.demo.form.EditMemoForm;
 import com.example.demo.form.EditTaskForm;
 import com.example.demo.service.MemoService;
 import com.example.demo.service.TaskService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -129,6 +132,34 @@ public class TaskController {
 		memoService.update(form.getContent(), memoId, userDetails.getUser().getUserId());
 		
 		return "redirect:" + AppConst.Url.VIEW_TASKS_MEMOS;
+	}
+	
+	/*
+	 * タスク作成画面の表示
+	 */
+	@GetMapping(AppConst.Url.CREATE_TASK)
+	public String viewCreateTask(@ModelAttribute("form") CreateTaskForm form, Model model) {
+		
+		return AppConst.View.CREATE_TASK;
+		
+	}
+	
+	/*
+	 * タスク作成
+	 */
+	@PostMapping(AppConst.Url.CREATE_TASK)
+	public String createTask(@AuthenticationPrincipal CustomUserDetails userDetails,
+								@Valid @ModelAttribute("form") CreateTaskForm form, BindingResult result, Model model) {
+		
+		if (result.hasErrors()) {
+			//フォワード処理：リクエストを飛ばすのではなく、create-user.htmlというテンプレートを使って画面を作りなおす
+			//リクエストはそのままに画面を作り直すだけであり、modelの中身は変わらないので元の入力値は表示されたままになる
+			return AppConst.View.CREATE_TASK;
+		}
+		
+		taskService.create(form, userDetails.getUser().getUserId());
+		
+		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}
 	
 	/*

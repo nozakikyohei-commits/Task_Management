@@ -25,7 +25,7 @@ public interface TaskMapper {
 		    @Param("sort") String sort, 
 		    @Param("order") String order
 	);
-
+	void create(Task task);
 	
 	void updateStatusToExpired(int userId);
 	

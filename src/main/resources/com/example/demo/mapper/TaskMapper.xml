@@ -99,6 +99,24 @@
 		
 		</select>
 		
+		<insert id="create">
+		
+			INSERT INTO tasks(
+					user_id,
+					name,
+					content,
+					importance,
+					deadline
+			) VALUES (
+					#{userId},
+					#{name},
+					#{content},
+					#{importance},
+					#{deadline}
+			)
+		
+		</insert>
+		
 		<update id="updateStatusToExpired">
 		
     		UPDATE
@@ -119,7 +137,7 @@
     		UPDATE
     				tasks
     		SET
-    				completed_at = CURRENT_TIMESTAMP,
+    				completed_at = CURRENT_DATE,
     				status = CASE
     			WHEN
     				deadline &lt; CURRENT_DATE THEN 3
