@@ -23,6 +23,17 @@
 	
 	</resultMap>
 	
+		<select id="getsTaskById" resultType="com.example.demo.entity.Task" resultMap="TaskResultMap">
+		
+			SELECT
+					*
+			FROM
+					tasks
+			WHERE
+					task_id = #{taskId}
+		
+		</select>
+	
 		<select id="getTasksForCalendar" resultType="com.example.demo.entity.Task" resultMap="TaskResultMap">
 		
 			SELECT

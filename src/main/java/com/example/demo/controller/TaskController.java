@@ -4,6 +4,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import com.example.demo.constant.AppConst;
 import com.example.demo.entity.Memo;
 import com.example.demo.entity.User;
 import com.example.demo.form.EditMemoForm;
+import com.example.demo.form.EditTaskForm;
 import com.example.demo.service.MemoService;
 import com.example.demo.service.TaskService;
 
@@ -132,6 +134,15 @@ public class TaskController {
 	/*
 	 * タスク編集画面の表示
 	 */
-	@GetMapping(AppConst.Url.EDIT_TASK + "/")
+	@GetMapping(AppConst.Url.EDIT_TASK + "/{taskId}")
+	public String viewEditTasks(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
+									@ModelAttribute("form") EditTaskForm form, Model model) {
+		
+		taskService.getsTaskById(taskId);
+		
+		model.addAttribute("task", taskService.getsTaskById(taskId));
+		
+		return AppConst.View.EDIT_TASK;
+	}
 
 }

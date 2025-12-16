@@ -17,6 +17,10 @@ public class TaskService {
 	
 	private final TaskMapper taskMapper;
 	
+	public Task getsTaskById(int taskId) {
+		return taskMapper.getsTaskById(taskId);
+	}
+	
 	public List<Task> getTasksForCalendar(int userId) {
 		
 		return taskMapper.getTasksForCalendar(userId);

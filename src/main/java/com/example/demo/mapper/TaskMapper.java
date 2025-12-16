@@ -10,6 +10,8 @@ import com.example.demo.entity.Task;
 @Mapper
 public interface TaskMapper {
 	
+	Task getsTaskById(int taskId);
+	
 	List<Task> getTasksForCalendar(int userId);
 	
 	List<Task> getIncompleteTasksByUserId(
