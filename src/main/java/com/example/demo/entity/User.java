@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class User {
 	private String mailAddress;
 	private String password;
 	private int role;
-	private Timestamp createdAt;
-	private Timestamp updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
 }

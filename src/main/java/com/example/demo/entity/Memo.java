@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -10,8 +10,8 @@ public class Memo {
 	private int memoId;
 	private int userId;
 	private String content;
-	private Timestamp createdAt;
-	private Timestamp updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 	
 	private User user;
 
