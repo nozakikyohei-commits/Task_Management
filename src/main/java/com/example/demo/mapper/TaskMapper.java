@@ -35,5 +35,7 @@ public interface TaskMapper {
 	void updateStatusToCompleted(@Param("taskId") int taskId, @Param("userId") int userId);
 	
 	void updateStatusToIncompleted(@Param("taskId") int taskId, @Param("userId") int userId);
+	
+	void delete(@Param("taskId") int taskId, @Param("userId") int userId);
 
 }

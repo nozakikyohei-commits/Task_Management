@@ -191,12 +191,21 @@ public class TaskController {
 								@Valid @ModelAttribute("form") EditTaskForm form, BindingResult result, Model model) {
 		
 		if (result.hasErrors()) {
-			//フォワード処理：リクエストを飛ばすのではなく、create-user.htmlというテンプレートを使って画面を作りなおす
-			//リクエストはそのままに画面を作り直すだけであり、modelの中身は変わらないので元の入力値は表示されたままになる
+			Task task = taskService.getsTaskById(taskId);
+			model.addAttribute("task", task);
+			
 			return AppConst.View.EDIT_TASK;
 		}
 		
 		taskService.update(form, taskId, userDetails.getUser().getUserId());
+		
+		return "redirect:" + AppConst.Url.VIEW_TASKS;
+	}
+	
+	@PostMapping(AppConst.Url.EDIT_TASK + "/{taskId}/delete")
+	public String deleteTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+		
+		taskService.delete(taskId, userDetails.getUser().getUserId());
 		
 		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}

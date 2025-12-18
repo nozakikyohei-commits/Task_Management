@@ -31,6 +31,7 @@ public class EditTaskForm {
 	private LocalDate deadline;
 	
 	@PastOrPresent(message = "{E0015}")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate completedDate;
 
 }

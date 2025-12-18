@@ -72,7 +72,7 @@
 		        <if test="order == 'asc'">ASC</if>
 		        <if test="order == 'desc'">DESC</if>
 		        
-		        , task_id ASC
+		        , deadline ASC
 		
 		</select>
 		
@@ -91,11 +91,14 @@
 			        <when test="sort == 'completedDate'">completed_date</when>
 			        <when test="sort == 'deadline'">deadline</when>
 			        <when test="sort == 'importance'">importance</when>
+			        <when test="sort == 'status'">status</when>
 			        <otherwise>completed_date</otherwise>
 			    </choose>
 			    
 			    <if test="order == 'asc'">ASC</if>
 			    <if test="order == 'desc'">DESC</if>
+			    
+			    ,completed_date DESC
 		
 		</select>
 		
@@ -126,6 +129,7 @@
 					content = #{content},
 					importance = #{importance},
 					deadline = #{deadline},
+					status = #{status},
 					completed_date = #{completedDate}
 			WHERE
 					task_id = #{taskId}
@@ -188,5 +192,17 @@
         			user_id = #{userId}
     	
     	</update>
+    	
+    	<delete id="delete">
+    	
+    	
+    		DELETE FROM
+    				tasks
+    		WHERE
+    				task_id = #{taskId}
+    		AND
+    				user_id = #{userId}
+    		
+    	</delete>
 
 </mapper>
