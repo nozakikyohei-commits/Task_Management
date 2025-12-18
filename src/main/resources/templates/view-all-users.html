@@ -44,6 +44,7 @@
 							</th>
 							<th>登録日時</th>
 							<th>更新日時</th>
+							<th>操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -65,14 +66,43 @@
 								<span th:if="${user.role == role.ADMIN}">管理者</span>
 							</td>
 							
-							<td th:text="${user.createdAt}"></td>
+							<td th:text="${#temporals.format(user.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
 							
-							<td th:text="${user.updatedAt}"></td>
+							<td th:text="${#temporals.format(user.updatedAt, 'yyyy/MM/dd HH:mm')}"></td>
+							
+							<td>
+								<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">削除</button>
+								
+								<div class="modal fade" id="deleteModal" tabindex="-1">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+										        <h5 class="modal-title">削除確認</h5>
+										        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+										      </div>
+										      <div class="modal-body">
+										        本当にこのユーザーを削除してもよろしいですか？<br>
+										        この操作は取り消せません。
+										      </div>
+										      <div class="modal-footer">
+										        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+										        
+										        <form th:action="@{|${url.VIEW_ALL_USERS}/${user.userId}/delete|}" method="post">
+										            <button type="submit" class="btn btn-danger">削除する</button>
+										        </form>
+										        
+										      </div>
+										</div>
+									</div>
+								</div>
+							</td>
 							
 						</tr>
 						
 					</tbody>
 				</table>
+				
+				
 			
 			</div>
 			

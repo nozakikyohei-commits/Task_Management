@@ -1,15 +1,19 @@
 package com.example.demo.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.authentication.CustomUserDetails;
 import com.example.demo.constant.AppConst;
+import com.example.demo.entity.User;
 import com.example.demo.form.RegistUserForm;
 import com.example.demo.service.UserService;
 
@@ -64,6 +68,21 @@ public class UserController {
 		model.addAttribute("currentOrder", order);
 		
 		return AppConst.View.VIEW_ALL_USERS;
+	}
+	
+	@PostMapping(AppConst.Url.VIEW_ALL_USERS + "/{userId}/delete")
+	public String deleteUser(@PathVariable int userId,
+							 @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+		
+		User loginUser = userDetails.getUser();
+		
+		if(loginUser.getRole() != AppConst.UserRole.ADMIN) {
+			return "/error/403";
+		}
+		
+		userService.delete(userId);
+		
+		return "redirect:" + AppConst.Url.VIEW_ALL_USERS;
 	}
 
 }

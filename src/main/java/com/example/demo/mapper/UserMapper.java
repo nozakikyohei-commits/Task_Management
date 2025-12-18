@@ -18,4 +18,6 @@ public interface UserMapper {
 	void create(User user);
 	
 	List<User> getAllUsers(@Param("sort") String sort, @Param("order") String order);
+	
+	void delete(int userId);
 }

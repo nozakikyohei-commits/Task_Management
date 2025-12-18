@@ -52,5 +52,10 @@ public class UserService {
 		//xml側から受け取った値をもとにメモを作成
 		memoMapper.create(user.getUserId());
 	}
+	
+	@Transactional(readOnly = false)
+	public void delete(int userId) {
+		userMapper.delete(userId);
+	}
 
 }
