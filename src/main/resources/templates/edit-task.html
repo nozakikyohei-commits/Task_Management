@@ -14,9 +14,50 @@
 		
 		<main>
 			
-			<div class="mx-2">
+			<div class="text-center my-5">
 				
-				<h1 class="mt-4" th:text="${task.name} + 編集画面"></h1>
+				<h1>タスク編集ページ</h1>
+				
+					<div class="form-body"
+						 th:with="url=${T(com.example.demo.constant.AppConst.Url)},
+				 		  		  importance=${T(com.example.demo.constant.AppConst.TaskImportance)}">
+						
+						<form th:action="@{|${url.EDIT_TASK}/${task.taskId}|}" th:object="${form}" method="post">
+							
+							<div class="my-2">
+								
+								<label for="taskName" class="fw-bold form-label mt-5">タスク名</label>
+								<input id="taskName" class="form-control w-25 mx-auto" type="text" th:field="*{name}" th:errorclass="is-invalid"/>
+								<div class="invalid-feedback" th:errors="*{name}"></div>
+								
+								<label for="content" class="fw-bold form-label mt-5">詳細</label>
+								<textarea id="content" class="form-control w-50 mx-auto" th:field="*{content}" th:errorclass="is-invalid"></textarea>
+								<div class="invalid-feedback" th:errors="*{content}"></div>
+								
+								<label for="importance" class="fw-bold form-label mt-5">重要度</label>
+								<select id="importance"  class="form-control w-25 mx-auto" th:field="*{importance}" th:errorclass="is-invalid">
+									<option th:value="${importance.UNSET}" selected>指定なし</option>
+									<option th:value="${importance.LOW}">低</option>
+									<option th:value="${importance.MEDIUM}">中</option>
+									<option th:value="${importance.HIGH}">高</option>
+								</select>
+								<div class="invalid-feedback" th:errors="*{importance}"></div>
+								
+								<label for="deadline" class="fw-bold form-label mt-5">期限</label>
+								<input id="deadline" class="form-control w-25 mx-auto" type="date" th:field="*{deadline}" th:errorclass="is-invalid"/>
+								<div class="invalid-feedback" th:errors="*{deadline}"></div>
+								
+								<label for="completedDate" class="fw-bold form-label mt-5">完了日</label>
+								<input id="completedDate" class="form-control w-25 mx-auto" type="date" th:field="*{completedDate}" th:errorclass="is-invalid"/>
+								<div class="invalid-feedback" th:errors="*{completedDate}"></div>
+								
+								<button class="btn btn-primary mt-5" type="submit">更新</button>
+								
+							</div>
+							
+						</form>
+						
+					</div>
 				
 			</div>
 			

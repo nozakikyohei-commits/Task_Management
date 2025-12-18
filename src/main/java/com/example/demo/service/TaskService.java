@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Task;
 import com.example.demo.form.CreateTaskForm;
+import com.example.demo.form.EditTaskForm;
 import com.example.demo.mapper.TaskMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,22 @@ public class TaskService {
 		task.setDeadline(form.getDeadline());
 		
 		taskMapper.create(task);
+	}
+	
+	@Transactional(readOnly = false)
+	public void update(EditTaskForm form, int taskId, int userId) {
+		
+		Task task = new Task();
+		
+		task.setTaskId(taskId);
+		task.setUserId(userId);
+		task.setName(form.getName());
+		task.setContent(form.getContent());
+		task.setImportance(form.getImportance());
+		task.setDeadline(form.getDeadline());
+		task.setCompletedDate(form.getCompletedDate());
+		
+		taskMapper.update(task);
 	}
 	
 	@Transactional(readOnly = false)

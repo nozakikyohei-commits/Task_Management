@@ -15,7 +15,7 @@ public class Task {
 	private int importance;
 	private LocalDate deadline;
 	private int status;
-	private LocalDate completedAt;
+	private LocalDate completedDate;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	

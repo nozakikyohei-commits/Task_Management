@@ -27,6 +27,8 @@ public interface TaskMapper {
 	);
 	void create(Task task);
 	
+	void update(Task task);
+	
 	void updateStatusToExpired(int userId);
 	
 	//引数が複数ある場合、SQL側で混乱が生じるリスクがあるため、各引数に名前をつけておく

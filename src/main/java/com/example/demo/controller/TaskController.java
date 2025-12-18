@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.demo.authentication.CustomUserDetails;
 import com.example.demo.constant.AppConst;
 import com.example.demo.entity.Memo;
+import com.example.demo.entity.Task;
 import com.example.demo.entity.User;
 import com.example.demo.form.CreateTaskForm;
 import com.example.demo.form.EditMemoForm;
@@ -166,14 +167,38 @@ public class TaskController {
 	 * タスク編集画面の表示
 	 */
 	@GetMapping(AppConst.Url.EDIT_TASK + "/{taskId}")
-	public String viewEditTasks(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
-									@ModelAttribute("form") EditTaskForm form, Model model) {
+	public String viewEditTasks(@PathVariable int taskId, EditTaskForm form, Model model) {
 		
-		taskService.getsTaskById(taskId);
+		Task task = taskService.getsTaskById(taskId);
 		
-		model.addAttribute("task", taskService.getsTaskById(taskId));
+		form.setName(task.getName());
+		form.setContent(task.getContent());
+		form.setImportance(task.getImportance());
+		form.setDeadline(task.getDeadline());
+		form.setCompletedDate(task.getCompletedDate());
+		
+		model.addAttribute("task", task);
+		model.addAttribute("form", form);
 		
 		return AppConst.View.EDIT_TASK;
+	}
+	
+	/*
+	 * タスク更新
+	 */
+	@PostMapping(AppConst.Url.EDIT_TASK + "/{taskId}")
+	public String updateTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
+								@Valid @ModelAttribute("form") EditTaskForm form, BindingResult result, Model model) {
+		
+		if (result.hasErrors()) {
+			//フォワード処理：リクエストを飛ばすのではなく、create-user.htmlというテンプレートを使って画面を作りなおす
+			//リクエストはそのままに画面を作り直すだけであり、modelの中身は変わらないので元の入力値は表示されたままになる
+			return AppConst.View.EDIT_TASK;
+		}
+		
+		taskService.update(form, taskId, userDetails.getUser().getUserId());
+		
+		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}
 
 }
