@@ -1,6 +1,9 @@
 package com.example.demo.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.demo.entity.User;
 
@@ -13,4 +16,6 @@ public interface UserMapper {
 	
 	//ユーザー新規登録をするためのメソッド
 	void create(User user);
+	
+	List<User> getAllUsers(@Param("sort") String sort, @Param("order") String order);
 }

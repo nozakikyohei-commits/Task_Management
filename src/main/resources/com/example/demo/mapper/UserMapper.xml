@@ -20,6 +20,31 @@
 	
 	</resultMap>
 	
+		<select id="getAllUsers" resultType="com.example.demo.entity.User" resultMap="UserResultMap">
+		
+			SELECT
+					user_id,
+					name,
+					mail_address,
+					role,
+					created_at,
+					updated_at
+			FROM
+					users
+			ORDER BY
+				<choose>
+		            <when test="sort == 'userId'">user_id</when>
+		            <when test="sort == 'role'">role</when>
+		            <otherwise>user_id</otherwise>
+		        </choose>
+		        
+		        <if test="order == 'asc'">ASC</if>
+		        <if test="order == 'desc'">DESC</if>
+		        
+		        , user_id
+		
+		</select>
+	
  		<select id="findByMailAddress" resultType="com.example.demo.entity.User" resultMap="UserResultMap">
 		
 			SELECT

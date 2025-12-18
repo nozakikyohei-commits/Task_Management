@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.constant.AppConst;
@@ -51,6 +52,18 @@ public class UserController {
 		//リダイレクト処理：下記のURLにGETリクエストを送る
 		return "redirect:" + AppConst.Url.LOGIN;
 		
+	}
+	
+	@GetMapping(AppConst.Url.VIEW_ALL_USERS)
+	public String viewAllUsers(@RequestParam(name = "sort", defaultValue = "userId") String sort,
+							   @RequestParam(name = "order", defaultValue = "asc") String order,
+							   Model model) {
+		
+		model.addAttribute("users", userService.getAllUsers(sort, order));
+		model.addAttribute("currentSort", sort);
+		model.addAttribute("currentOrder", order);
+		
+		return AppConst.View.VIEW_ALL_USERS;
 	}
 
 }

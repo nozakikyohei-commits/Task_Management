@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,10 @@ public class UserService {
 		User user = userMapper.findByMailAddress(mailAddress);
 		
 		return user != null;
+	}
+	
+	public List<User> getAllUsers(String sort, String order) {
+		return userMapper.getAllUsers(sort, order);
 	}
 	
 	@Transactional(readOnly = false)
