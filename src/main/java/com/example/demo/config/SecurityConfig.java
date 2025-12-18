@@ -18,6 +18,7 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authz -> authz
 				.requestMatchers("/css/**", "/js/**", "/img/**").permitAll() //フロントエンド関連のファイルへのアクセス許可
 				.requestMatchers(AppConst.Url.DEFAULT, AppConst.Url.LOGIN, AppConst.Url.CREATE_USER).permitAll() //ログイン認証前にも開ける画面を設定
+				.requestMatchers(AppConst.Url.VIEW_ALL_TASKS, AppConst.Url.VIEW_ALL_USERS).hasRole("ADMIN") //デフォルトで「ROLE_」という接頭辞をつけてくれる
 				.anyRequest().authenticated() //上記以外はログイン認証を必要とする
 		).formLogin(login -> login
 				.loginPage(AppConst.Url.LOGIN) //認証前のユーザーが保護されたURLにアクセスしようとした場合、/loginへGETリクエストを送信
