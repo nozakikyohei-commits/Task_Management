@@ -61,9 +61,9 @@
             			
 						<th th:if="${currentTab == 'completed'}">
 							<a class="sort-link"
-							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='completedAt', order=${currentSort == 'completedAt' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='completedDate', order=${currentSort == 'completedDate' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 								完了日
-								<span th:if="${currentSort == 'completedAt'}" 
+								<span th:if="${currentSort == 'completedDate'}" 
 									  th:text="${currentOrder == 'asc' ? '▲' : '▼'}"></span>
 							</a>
 						</th>
@@ -107,7 +107,7 @@
 								</form>
 							</span>
 						</td>
-						<td th:if="${currentTab == 'completed'}" th:text="${task.completedAt}"></td>
+						<td th:if="${currentTab == 'completed'}" th:text="${task.completedDate}"></td>
 						
 					</tr>
 				</tbody>
