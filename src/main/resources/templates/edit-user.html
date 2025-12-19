@@ -36,13 +36,15 @@
 							
 							<label for="password"  class="fw-bold form-label mt-5">パスワード</label>
 							<input id="password" class="form-control w-25 mx-auto" type="password" th:field="*{password}" th:errorclass="is-invalid"
-									th:classappend="${#fields.hasErrors('passwordFormatValid')} or ${#fields.hasErrors('passwordMatching')} ? 'is-invalid'"/>
+									th:classappend="${#fields.hasErrors('passwordFormatValid')} or ${#fields.hasErrors('passwordMatching')} ? 'is-invalid'"
+									placeholder="変更時は入力してください"/>
 							<div class="invalid-feedback" th:errors="*{passwordFormatValid}"></div>
 							
 							<label for="passwordConfirmation"  class="fw-bold form-label mt-5">パスワード確認用</label>
 							<input id="passwordConfirmation" class="form-control w-25 mx-auto" type="password"
 									th:field="*{passwordConfirmation}"
-									th:classappend="${#fields.hasErrors('passwordMatching')} ? 'is-invalid'"/>
+									th:classappend="${#fields.hasErrors('passwordMatching')} ? 'is-invalid'"
+									placeholder="変更時は入力してください"/>
 							<div class="invalid-feedback" th:errors="*{passwordMatching}"></div>
 							
 							<button class="btn btn-primary mt-5" type="submit">更新</button>
