@@ -32,7 +32,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
-                       th:href="@{${url.EDIT_USER}}"
+                       th:href="@{|${url.EDIT_USER}/${user.userId}|}"
                        th:classappend="${currentUri == url.EDIT_USER} ? 'active fw-bold text-white'">
                        アカウント編集画面</a>
                 </li>
