@@ -27,7 +27,7 @@ public class EditUserForm {
 	
 		//特定の項目に直接付与されるものではないため、html側でこれに該当するエラーをどこに付与するか設定が必要
 		@AssertTrue(message = "{E0007}")
-		public boolean isPasswordValid() {
+		public boolean isPasswordFormatValid() {
 			
 			//画面表示の段階ではフィールド値はnull、POSTリクエスト後に入力値がなかった場合は空文字として認識する
 			//画面表示する際にも*{passwordValid}を見つけると実行してしまうため、空文字チェックのみではNullPointerExceptionが発生してしまう
@@ -39,7 +39,6 @@ public class EditUserForm {
 	            return true;
 	        } else if(!isPasswordEmpty) {
 				//入力値があれば「記号を必ず含む6～20字」かチェックする
-				//return password.matches("^(?=.*[!-/:-@\\[-`{-~])[!-~]{6,20}$");
 				return password.matches("^(?=.*\\p{Punct})[!-~]{6,20}$");
 			}
 			//パスワード：null,パスワード確認用：入力有の場合は{E0009}のみ表示されるようtrueを返す
@@ -48,7 +47,7 @@ public class EditUserForm {
 	
 		//特定の項目に直接付与されるものではないため、html側でこれに該当するエラーをどこに付与するか設定が必要
 		@AssertTrue(message = "{E0009}")
-		public boolean isPasswordSame() {
+		public boolean isPasswordMatching() {
 			return Objects.equals(password, passwordConfirmation);	//引数同士を比べて内容が同じか判別する
 		}
 

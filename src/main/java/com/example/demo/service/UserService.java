@@ -62,12 +62,24 @@ public class UserService {
 	public void update(EditUserForm form, int userId) {
 		
 		User user = new User();
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		
 		user.setUserId(userId);
 		user.setName(form.getName());
 		user.setMailAddress(form.getMailAddress());
-		user.setPassword(encoder.encode(form.getPassword()));
+		
+		if (form.getPassword() == null || form.getPassword().isEmpty()) {
+	        
+	        //入力がない場合は現在のパスワードをDBから取得してセットする（ハッシュ化済みのものなので、ここでもう一度ハッシュ化してはならない）
+			User targetUser = userMapper.getByUserId(userId);
+	        user.setPassword(targetUser.getPassword());
+	        
+	    } else {
+	        
+	        //入力がある場は新しくハッシュ化してセットする
+	        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	        user.setPassword(encoder.encode(form.getPassword()));
+	        
+	    }
 		
 		userMapper.update(user);
 	}

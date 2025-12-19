@@ -141,12 +141,6 @@ public class UserController {
 			return AppConst.View.EDIT_USER;
 		}
 	    
-	    User targetUser = userService.getByUserId(targetUserId);
-	    
-	    if((form.getPassword() == null) && (form.getPasswordConfirmation() == null)) {
-	    	form.setPassword(targetUser.getPassword());
-	    }
-	    
 	    userService.update(form, targetUserId);
 
 	    //管理者ならユーザー管理画面へ、一般ならタスク一覧へ戻す
