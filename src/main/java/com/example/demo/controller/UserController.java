@@ -59,10 +59,12 @@ public class UserController {
 	}
 	
 	@GetMapping(AppConst.Url.VIEW_ALL_USERS)
-	public String viewAllUsers(@RequestParam(name = "sort", defaultValue = "userId") String sort,
+	public String viewAllUsers(@AuthenticationPrincipal CustomUserDetails userDetails,
+							   @RequestParam(name = "sort", defaultValue = "userId") String sort,
 							   @RequestParam(name = "order", defaultValue = "asc") String order,
 							   Model model) {
 		
+		model.addAttribute("loginUserId", userDetails.getUser().getUserId());
 		model.addAttribute("users", userService.getAllUsers(sort, order));
 		model.addAttribute("currentSort", sort);
 		model.addAttribute("currentOrder", order);
@@ -71,14 +73,21 @@ public class UserController {
 	}
 	
 	@PostMapping(AppConst.Url.VIEW_ALL_USERS + "/{userId}/delete")
-	public String deleteUser(@PathVariable int userId,
-							 @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+	public String deleteUser(@PathVariable int userId, @AuthenticationPrincipal CustomUserDetails userDetails, 
+							 RedirectAttributes redirectAttributes, Model model) {
 		
 		User loginUser = userDetails.getUser();
 		
+		//URLを直接入力された場合でも管理者以外はエラー画面を表示する
 		if(loginUser.getRole() != AppConst.UserRole.ADMIN) {
 			return "/error/403";
 		}
+		
+		//URLを直接入力された場合でもログインユーザーは削除できないようにする
+		if (userId == loginUser.getUserId()) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "自分自身のアカウントは削除できません。");
+	        return "redirect:" + AppConst.Url.VIEW_ALL_USERS;
+	    }
 		
 		userService.delete(userId);
 		

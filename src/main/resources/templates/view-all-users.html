@@ -21,6 +21,10 @@
 			
 				<h1 class="mt-4">ユーザー管理画面</h1>
 				
+				<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+			        <span th:text="${errorMessage}"></span>
+			    </div>
+				
 				<table class="text-center table table-striped table-bordered">
 					<thead>
 						<tr>
@@ -71,30 +75,45 @@
 							<td th:text="${#temporals.format(user.updatedAt, 'yyyy/MM/dd HH:mm')}"></td>
 							
 							<td>
-								<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">削除</button>
+								<!--th:blockを使っておけば処理後にth:blockというタグ自体は消えてくれるためレイアウトをきれいに保てる
+									ログインユーザー以外にはモーダルにつながるボタンを表示-->
+								<th:block th:if="${user.userId != loginUserId}">
+							    <button type="button" class="btn btn-danger" 
+							            data-bs-toggle="modal" 
+							            th:data-bs-target="|#deleteModal-${user.userId}|">
+							        削除
+							    </button>
+							    
+							    <!--モーダルID内にユーザーIDを入れなければ、すべて同じモーダルを開くためのボタンだと認識される
+							    	→どの削除ボタンを押しても作成されるURLが"/view-all-users/1/delete"になってしまう-->
+							    <div class="modal fade" th:id="|deleteModal-${user.userId}|" tabindex="-1">
+							        <div class="modal-dialog">
+							            <div class="modal-content">
+							                <div class="modal-header">
+							                    <h5 class="modal-title">削除確認</h5>
+							                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+							                </div>
+							                <div class="modal-body">
+												<!--区別がつきやすいようにspanでユーザー名を入れておく-->
+							                    <span class="fw-bold" th:text="${user.name}"></span>
+							                    さんを本当に削除してもよろしいですか？<br>
+							                    この操作は取り消せません。
+							                </div>
+							                <div class="modal-footer">
+							                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+							                    
+							                    <form th:action="@{|${url.VIEW_ALL_USERS}/${user.userId}/delete|}" method="post">
+							                        <button type="submit" class="btn btn-danger">削除する</button>
+							                    </form>
+							                    
+							                </div>
+							            </div>
+							        </div>
+							    </div>
+								</th:block>
 								
-								<div class="modal fade" id="deleteModal" tabindex="-1">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-										        <h5 class="modal-title">削除確認</h5>
-										        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-										      </div>
-										      <div class="modal-body">
-										        本当にこのユーザーを削除してもよろしいですか？<br>
-										        この操作は取り消せません。
-										      </div>
-										      <div class="modal-footer">
-										        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-										        
-										        <form th:action="@{|${url.VIEW_ALL_USERS}/${user.userId}/delete|}" method="post">
-										            <button type="submit" class="btn btn-danger">削除する</button>
-										        </form>
-										        
-										      </div>
-										</div>
-									</div>
-								</div>
+								<!--ログインユーザーの欄にはボタンを表示させず、ビュー側からの削除リクエスト送信を防ぐ-->
+								<span th:if="${user.userId == loginUserId}" class="text-secondary fw-bold">ログイン中</span>
 							</td>
 							
 						</tr>
