@@ -56,6 +56,17 @@
 		
 		</select>
 		
+		<select id="getByUserId" resultType="com.example.demo.entity.User" resultMap="UserResultMap">
+		
+			SELECT
+					*
+			FROM
+					users
+			WHERE
+					user_id = #{userId}
+		
+		</select>
+		
 		<!-- データを作成した際に、自動採番でDBに登録された値をjava側のオブジェクトに渡す（オブジェクトのどの値かはkeyPropertyで設定） -->
 		<insert id="create" useGeneratedKeys="true" keyProperty="userId">
 		
@@ -71,6 +82,20 @@
 			)
 		
 		</insert>
+		
+		<update id="update">
+		
+			UPDATE
+					users
+			SET
+					name = #{name},
+					mail_address = #{mailAddress},
+					password = #{password},
+					updated_at = CURRENT_TIMESTAMP
+			WHERE
+					user_id = #{userId}
+		
+		</update>
 		
 		<delete id="delete">
     	

@@ -14,10 +14,14 @@ public interface UserMapper {
 	//ログイン認証時、ユーザー登録時のメールアドレス重複チェックに使用
 	User findByMailAddress(String mailAddress);
 	
+	User getByUserId(int userId);
+	
 	//ユーザー新規登録をするためのメソッド
 	void create(User user);
 	
 	List<User> getAllUsers(@Param("sort") String sort, @Param("order") String order);
+	
+	void update(User user);
 	
 	void delete(int userId);
 }

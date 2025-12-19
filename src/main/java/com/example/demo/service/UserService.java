@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.User;
+import com.example.demo.form.EditUserForm;
 import com.example.demo.form.RegistUserForm;
 import com.example.demo.mapper.MemoMapper;
 import com.example.demo.mapper.UserMapper;
@@ -34,6 +35,10 @@ public class UserService {
 		return userMapper.getAllUsers(sort, order);
 	}
 	
+	public User getByUserId(int userId) {
+		return userMapper.getByUserId(userId);
+	}
+	
 	@Transactional(readOnly = false)
 	//フォームに入力された「名前」「メールアドレス」「パスワード」を使用して新規ユーザーをDB上に作成するメソッド
 	public void create(RegistUserForm form) {
@@ -51,6 +56,20 @@ public class UserService {
 		
 		//xml側から受け取った値をもとにメモを作成
 		memoMapper.create(user.getUserId());
+	}
+	
+	@Transactional(readOnly = false)
+	public void update(EditUserForm form, int userId) {
+		
+		User user = new User();
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		
+		user.setUserId(userId);
+		user.setName(form.getName());
+		user.setMailAddress(form.getMailAddress());
+		user.setPassword(encoder.encode(form.getPassword()));
+		
+		userMapper.update(user);
 	}
 	
 	@Transactional(readOnly = false)

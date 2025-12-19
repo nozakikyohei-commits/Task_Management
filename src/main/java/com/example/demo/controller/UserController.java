@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.authentication.CustomUserDetails;
 import com.example.demo.constant.AppConst;
 import com.example.demo.entity.User;
+import com.example.demo.form.EditUserForm;
 import com.example.demo.form.RegistUserForm;
 import com.example.demo.service.UserService;
 
@@ -59,12 +60,10 @@ public class UserController {
 	}
 	
 	@GetMapping(AppConst.Url.VIEW_ALL_USERS)
-	public String viewAllUsers(@AuthenticationPrincipal CustomUserDetails userDetails,
-							   @RequestParam(name = "sort", defaultValue = "userId") String sort,
+	public String viewAllUsers(@RequestParam(name = "sort", defaultValue = "userId") String sort,
 							   @RequestParam(name = "order", defaultValue = "asc") String order,
 							   Model model) {
 		
-		model.addAttribute("loginUserId", userDetails.getUser().getUserId());
 		model.addAttribute("users", userService.getAllUsers(sort, order));
 		model.addAttribute("currentSort", sort);
 		model.addAttribute("currentOrder", order);
@@ -80,7 +79,7 @@ public class UserController {
 		
 		//URLを直接入力された場合でも管理者以外はエラー画面を表示する
 		if(loginUser.getRole() != AppConst.UserRole.ADMIN) {
-			return "/error/403";
+			return "error/403";
 		}
 		
 		//URLを直接入力された場合でもログインユーザーは削除できないようにする
@@ -92,6 +91,70 @@ public class UserController {
 		userService.delete(userId);
 		
 		return "redirect:" + AppConst.Url.VIEW_ALL_USERS;
+	}
+	
+	@GetMapping(AppConst.Url.EDIT_USER + "/{userId}")
+	public String viewEditUser(@PathVariable("userId") int targetUserId, @AuthenticationPrincipal CustomUserDetails userDetails,
+            				   @ModelAttribute("form") EditUserForm form, Model model) {
+		
+		User loginUser = userDetails.getUser();
+	    int loginUserId = loginUser.getUserId();
+	    int loginUserRole = loginUser.getRole();
+
+	    boolean isAdmin = (loginUserRole == AppConst.UserRole.ADMIN);
+	    boolean isMyself = (targetUserId == loginUserId);
+
+	    //「管理者ではない」かつ「自分自身でもない」場合は権限エラーとして返す
+	    if (!isAdmin && !isMyself) {
+	        return "error/403";
+	    }
+	    
+	    User targetUser = userService.getByUserId(targetUserId);
+	    
+	    form.setName(targetUser.getName());
+	    form.setMailAddress(targetUser.getMailAddress());
+	    
+	    model.addAttribute("targetUserId", targetUserId);
+	    
+	    return AppConst.View.EDIT_USER;
+	}
+	
+	@PostMapping(AppConst.Url.EDIT_USER + "/{targetUserId}")
+	public String updateUser(@PathVariable("targetUserId") int targetUserId, @AuthenticationPrincipal CustomUserDetails userDetails,
+	                         @Valid @ModelAttribute("form") EditUserForm form, BindingResult result, Model model) {
+
+	    User loginUser = userDetails.getUser();
+	    int loginUserId = loginUser.getUserId();
+	    int loginUserRole = loginUser.getRole();
+
+	    boolean isAdmin = (loginUserRole == AppConst.UserRole.ADMIN);
+	    boolean isMyself = (targetUserId == loginUserId);
+
+	    //「管理者ではない」かつ「自分自身でもない」場合は権限エラーとして返す
+	    if (!isAdmin && !isMyself) {
+	        return "error/403";
+	    }
+
+	    if (result.hasErrors()) {
+			//フォワード処理：リクエストを飛ばすのではなく、create-user.htmlというテンプレートを使って画面を作りなおす
+			//リクエストはそのままに画面を作り直すだけであり、modelの中身は変わらないので元の入力値は表示されたままになる
+			return AppConst.View.EDIT_USER;
+		}
+	    
+	    User targetUser = userService.getByUserId(targetUserId);
+	    
+	    if((form.getPassword() == null) && (form.getPasswordConfirmation() == null)) {
+	    	form.setPassword(targetUser.getPassword());
+	    }
+	    
+	    userService.update(form, targetUserId);
+
+	    //管理者ならユーザー管理画面へ、一般ならタスク一覧へ戻す
+	    if (isAdmin) {
+	        return "redirect:" + AppConst.Url.VIEW_ALL_USERS;
+	    } else {
+	        return "redirect:" + AppConst.Url.VIEW_TASKS;
+	    }
 	}
 
 }
