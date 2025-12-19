@@ -55,7 +55,6 @@ public class TaskController {
 	        model.addAttribute("tasks", taskService.getIncompleteTasksByUserId(userId, sort, order));
 	    }
 		
-		model.addAttribute("user", loginUser);
 		model.addAttribute("currentTab", tab);	//tabによって表示内容を変更するために渡す
 		model.addAttribute("currentSort", sort);
 		model.addAttribute("currentOrder", order);
@@ -97,7 +96,6 @@ public class TaskController {
 		taskService.updateStatusToExpired(loginUser.getUserId());
 		
 		model.addAttribute("tasks", taskService.getTasksForCalendar(userDetails.getUser().getUserId()));
-		model.addAttribute("user", loginUser);
 		
 		return AppConst.View.VIEW_TASKS_CALENDAR;
 	}
@@ -114,7 +112,6 @@ public class TaskController {
 		Memo memo = memoService.getByUserId(loginUser.getUserId());
 		form.setContent(memo.getContent());
 		
-		model.addAttribute("user", loginUser);
 		model.addAttribute("memo", memo);
 		model.addAttribute("form", form);
 		

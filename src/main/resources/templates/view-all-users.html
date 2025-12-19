@@ -52,41 +52,41 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="user : ${users}">
+						<tr th:each="oneUser : ${users}">
 							
 							<td>
-								<a th:href="@{|${url.EDIT_USER}/${user.userId}|}" 
-								   th:text="${user.userId}" 
+								<a th:href="@{|${url.EDIT_USER}/${oneUser.userId}|}" 
+								   th:text="${oneUser.userId}" 
 								   class="sort-link">
 								</a>
 							</td>
 							
-							<td th:text="${user.name}"></td>
+							<td th:text="${oneUser.name}"></td>
 							
-							<td th:text="${user.mailAddress}"></td>
+							<td th:text="${oneUser.mailAddress}"></td>
 							
 							<td>
-								<span th:if="${user.role == role.GENERAL}">一般</span>
-								<span th:if="${user.role == role.ADMIN}">管理者</span>
+								<span th:if="${oneUser.role == role.GENERAL}">一般</span>
+								<span th:if="${oneUser.role == role.ADMIN}">管理者</span>
 							</td>
 							
-							<td th:text="${#temporals.format(user.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
+							<td th:text="${#temporals.format(oneUser.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
 							
-							<td th:text="${#temporals.format(user.updatedAt, 'yyyy/MM/dd HH:mm')}"></td>
+							<td th:text="${#temporals.format(oneUser.updatedAt, 'yyyy/MM/dd HH:mm')}"></td>
 							
 							<td>
 								<!--th:blockを使っておけば処理後にth:blockというタグ自体は消えてくれるためレイアウトをきれいに保てる
 									ログインユーザー以外にはモーダルにつながるボタンを表示-->
-								<th:block th:if="${user.userId != loginUserId}">
+								<th:block th:if="${oneUser.userId != user.userId}">
 							    <button type="button" class="btn btn-danger" 
 							            data-bs-toggle="modal" 
-							            th:data-bs-target="|#deleteModal-${user.userId}|">
+							            th:data-bs-target="|#deleteModal-${oneUser.userId}|">
 							        削除
 							    </button>
 							    
 							    <!--モーダルID内にユーザーIDを入れなければ、すべて同じモーダルを開くためのボタンだと認識される
 							    	→どの削除ボタンを押しても作成されるURLが"/view-all-users/1/delete"になってしまう-->
-							    <div class="modal fade" th:id="|deleteModal-${user.userId}|" tabindex="-1">
+							    <div class="modal fade" th:id="|deleteModal-${oneUser.userId}|" tabindex="-1">
 							        <div class="modal-dialog">
 							            <div class="modal-content">
 							                <div class="modal-header">
@@ -95,14 +95,14 @@
 							                </div>
 							                <div class="modal-body">
 												<!--区別がつきやすいようにspanでユーザー名を入れておく-->
-							                    <span class="fw-bold" th:text="${user.name}"></span>
+							                    <span class="fw-bold" th:text="${oneUser.name}"></span>
 							                    さんを本当に削除してもよろしいですか？<br>
 							                    この操作は取り消せません。
 							                </div>
 							                <div class="modal-footer">
 							                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
 							                    
-							                    <form th:action="@{|${url.VIEW_ALL_USERS}/${user.userId}/delete|}" method="post">
+							                    <form th:action="@{|${url.VIEW_ALL_USERS}/${oneUser.userId}/delete|}" method="post">
 							                        <button type="submit" class="btn btn-danger">削除する</button>
 							                    </form>
 							                    
@@ -113,7 +113,7 @@
 								</th:block>
 								
 								<!--ログインユーザーの欄にはボタンを表示させず、ビュー側からの削除リクエスト送信を防ぐ-->
-								<span th:if="${user.userId == loginUserId}" class="text-secondary fw-bold">ログイン中</span>
+								<span th:if="${oneUser.userId == user.userId}" class="text-secondary fw-bold">ログイン中</span>
 							</td>
 							
 						</tr>

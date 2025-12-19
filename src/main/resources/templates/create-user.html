@@ -19,9 +19,9 @@
 		
 			<h1>ユーザー新規登録ページ</h1>
 			
-				<div class="form-body">
+				<div class="form-body" th:with="url=${T(com.example.demo.constant.AppConst.Url)}">
 					
-					<form th:action="@{/create-user}" th:object="${form}" method="post">
+					<form th:action="@{${url.CREATE_USER}}" th:object="${form}" method="post">
 						
 						<div class="my-5">
 							
