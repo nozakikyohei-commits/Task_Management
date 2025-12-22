@@ -53,12 +53,30 @@
                 </li>
                 
                 <li class="nav-item">
-                	<form th:action="@{/logout}" method="post">
-    					<input class="nav-link" type="submit" name="logout" value="ログアウト"/>
-					</form>
+					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">ログアウト</button>
                 </li>
             </ul>
-            <span class="bg-danger text-white" th:if="${param.error}">無効なアクセスです</span>
+            <div class="modal fade" id="logoutModal" tabindex="-1">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title">ログアウト確認</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			      </div>
+			      <div class="modal-body">
+			        ログアウトしますか？
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+			        
+			        <form th:action="@{/logout}" method="post">
+    					<button class="btn btn-danger" type="submit" name="logout" value="ログアウト">ログアウト</button>
+					</form>
+			        
+			      </div>
+			    </div>
+			  </div>
+			</div>
         </div>
     </nav>
 
