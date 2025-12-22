@@ -24,7 +24,8 @@ public class RegistUserForm {
 	@NotBlank(message = "{E0002}")
 	//Javaの正規表現エンジン（java.util.regex.Pattern）に登録されている記号グループ（Punct）を使用
 	//\p{〇〇}という書き方でグループ名を指定可能（\はエスケープシーケンスであるため、二つ重ねる必要がある）
-	@Pattern(regexp = "^(?=.*\\p{Punct})[!-~]{6,20}$", message = "{E0007}")
+	//^$|という記述で「空文字または～」とし、空文字の際にはNotBlankのみに引っかかるようにしている
+	@Pattern(regexp = "^$|^(?=.*\\p{Punct})[!-~]{6,20}$", message = "{E0007}")
 	private String password;
 	
 	private String passwordConfirmation;
