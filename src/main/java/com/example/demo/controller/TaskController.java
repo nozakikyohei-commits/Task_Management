@@ -166,9 +166,18 @@ public class TaskController {
 	 * タスク編集画面の表示
 	 */
 	@GetMapping(AppConst.Url.EDIT_TASK + "/{taskId}")
-	public String viewEditTasks(@PathVariable int taskId, EditTaskForm form, Model model) {
+	public String viewEditTasks(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
+								EditTaskForm form, Model model) {
 		
 		Task task = taskService.getsTaskById(taskId);
+		User loginUser = userDetails.getUser();
+		boolean isSameUser = (task.getUserId() == loginUser.getUserId());
+		boolean isAdmin = loginUser.getRole() == AppConst.UserRole.ADMIN;
+		
+		//どちらでもなければエラー画面を返す
+		if (!(isAdmin || isSameUser)) {
+	        return "error/403";
+	    }
 		
 		form.setName(task.getName());
 		form.setContent(task.getContent());
@@ -189,16 +198,29 @@ public class TaskController {
 	public String updateTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
 								@Valid @ModelAttribute("form") EditTaskForm form, BindingResult result, Model model) {
 		
+		Task task = taskService.getsTaskById(taskId);
+		User loginUser = userDetails.getUser();
+		boolean isSameUser = (task.getUserId() == loginUser.getUserId());
+		boolean isAdmin = loginUser.getRole() == AppConst.UserRole.ADMIN;
+		
 		if (result.hasErrors()) {
-			Task task = taskService.getsTaskById(taskId);
 			model.addAttribute("task", task);
-			
 			return AppConst.View.EDIT_TASK;
 		}
 		
-		taskService.update(form, taskId, userDetails.getUser().getUserId());
+		if(isSameUser) {
+			taskService.update(form, taskId, userDetails.getUser().getUserId());
+		} else if(isAdmin) {
+			taskService.update(form, taskId, task.getUserId());
+		} else {
+			return "error/403";
+		}
 		
-		return "redirect:" + AppConst.Url.VIEW_TASKS;
+		if (isAdmin) {
+		    return "redirect:" + AppConst.Url.VIEW_ALL_TASKS;
+		} else {
+		    return "redirect:" + AppConst.Url.VIEW_TASKS;
+		}
 	}
 	
 	/*
@@ -207,7 +229,18 @@ public class TaskController {
 	@PostMapping(AppConst.Url.EDIT_TASK + "/{taskId}/delete")
 	public String deleteTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
 		
-		taskService.delete(taskId, userDetails.getUser().getUserId());
+		Task task = taskService.getsTaskById(taskId);
+		User loginUser = userDetails.getUser();
+		boolean isSameUser = (task.getUserId() == loginUser.getUserId());
+		boolean isAdmin = loginUser.getRole() == AppConst.UserRole.ADMIN;
+		
+		if(isSameUser) {
+			taskService.delete(taskId, loginUser.getUserId());
+		} else if(isAdmin) {
+			taskService.delete(taskId, task.getUserId());
+		} else {
+			return "error/403";
+		}
 		
 		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}
