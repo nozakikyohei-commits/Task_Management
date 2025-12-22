@@ -27,17 +27,17 @@ public class TaskService {
 	
 	public List<Task> getTasksForCalendar(int userId) {
 		
-		return taskMapper.getTasksForCalendar(userId);
+		return taskMapper.getTasksForCalendar(userId, AppConst.TaskStatus.INCOMPLETE, AppConst.TaskStatus.EXPIRED);
 	}
 	
 	public List<Task> getIncompleteTasksByUserId(int userId, String sort, String order) {
 		
-		return taskMapper.getIncompleteTasksByUserId(userId, sort, order);
+		return taskMapper.getIncompleteTasksByUserId(userId, sort, order, AppConst.TaskStatus.INCOMPLETE, AppConst.TaskStatus.EXPIRED);
 	}
 	
 	public List<Task> getCompletedTasksByUserId(int userId, String sort, String order) {
 		
-		return taskMapper.getCompletedTasksByUserId(userId, sort, order);
+		return taskMapper.getCompletedTasksByUserId(userId, sort, order, AppConst.TaskStatus.COMPLETED, AppConst.TaskStatus.EXPIRED_COMPLETED);
 	}
 	
 	public List<Task> getAllTasks(String sort, String order) {
@@ -105,17 +105,17 @@ public class TaskService {
 	
 	@Transactional(readOnly = false)
 	public void updateStatusToExpired(int userId) {
-		taskMapper.updateStatusToExpired(userId);
+		taskMapper.updateStatusToExpired(userId, AppConst.TaskStatus.INCOMPLETE, AppConst.TaskStatus.EXPIRED);
 	}
 	
 	@Transactional(readOnly = false)
 	public void updateStatusToCompleted(int taskId, int userId) {
-		taskMapper.updateStatusToCompleted(taskId, userId);
+		taskMapper.updateStatusToCompleted(taskId, userId, AppConst.TaskStatus.COMPLETED, AppConst.TaskStatus.EXPIRED_COMPLETED);
 	}
 	
 	@Transactional(readOnly = false)
 	public void updateStatusToIncompleted(int taskId, int userId) {
-		taskMapper.updateStatusToIncompleted(taskId, userId);
+		taskMapper.updateStatusToIncompleted(taskId, userId, AppConst.TaskStatus.INCOMPLETE, AppConst.TaskStatus.EXPIRED);
 	}
 	
 	@Transactional(readOnly = false)

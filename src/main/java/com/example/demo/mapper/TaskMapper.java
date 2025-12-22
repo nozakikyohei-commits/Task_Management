@@ -12,18 +12,26 @@ public interface TaskMapper {
 	
 	Task getsTaskById(int taskId);
 	
-	List<Task> getTasksForCalendar(int userId);
+	List<Task> getTasksForCalendar(
+			@Param("userId") int userId,
+			@Param("incomplete") int incomplete,
+			@Param("expired") int expired
+	);
 	
 	List<Task> getIncompleteTasksByUserId(
 			@Param("userId") int userId, 
 		    @Param("sort") String sort, 
-		    @Param("order") String order
+		    @Param("order") String order,
+		    @Param("incomplete") int incomplete,
+			@Param("expired") int expired
 	);
 	
 	List<Task> getCompletedTasksByUserId(
 			@Param("userId") int userId, 
 		    @Param("sort") String sort, 
-		    @Param("order") String order
+		    @Param("order") String order,
+		    @Param("completed") int completed,
+			@Param("expiredCompleted") int expiredCompleted
 	);
 	
 	List<Task> getAllTasks(
@@ -35,13 +43,30 @@ public interface TaskMapper {
 	
 	void update(Task task);
 	
-	void updateStatusToExpired(int userId);
+	void updateStatusToExpired(
+			@Param("userId") int userId,
+			@Param("incomplete") int incomplete,
+			@Param("expired") int expired
+	);
 	
 	//引数が複数ある場合、SQL側で混乱が生じるリスクがあるため、各引数に名前をつけておく
-	void updateStatusToCompleted(@Param("taskId") int taskId, @Param("userId") int userId);
+	void updateStatusToCompleted(
+			@Param("taskId") int taskId,
+			@Param("userId") int userId,
+			@Param("completed") int completed,
+			@Param("expiredCompleted") int expiredCompleted
+	);
 	
-	void updateStatusToIncompleted(@Param("taskId") int taskId, @Param("userId") int userId);
+	void updateStatusToIncompleted(
+			@Param("taskId") int taskId,
+			@Param("userId") int userId,
+			@Param("incomplete") int incomplete,
+			@Param("expired") int expired
+	);
 	
-	void delete(@Param("taskId") int taskId, @Param("userId") int userId);
+	void delete(
+			@Param("taskId") int taskId,
+			@Param("userId") int userId
+	);
 
 }

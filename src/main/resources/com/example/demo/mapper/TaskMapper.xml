@@ -52,7 +52,7 @@
 			WHERE
 					user_id = #{userId}
 			AND
-					status IN (0,2)
+					status IN (#{incomplete},#{expired})
 		
 		</select>
 		
@@ -65,7 +65,7 @@
 			WHERE
 					user_id = #{userId}
 			AND
-					status IN (0, 2)
+					status IN (#{incomplete},#{expired})
 			ORDER BY
 			
 				<!-- if-elseやswitchみたいなもの。test=の中身が条件式
@@ -94,7 +94,7 @@
 			WHERE
 					user_id = #{userId}
 			AND
-					status IN (1, 3)
+					status IN (#{completed}, #{expiredCompleted})
 			ORDER BY
 				<choose>
 			        <when test="sort == 'completedDate'">completed_date</when>
@@ -184,11 +184,11 @@
     		UPDATE
     				tasks
     		SET
-    				status = 2
+    				status = #{expired}
     		WHERE
     				user_id = #{userId}
     		AND
-    				status = 0
+    				status = #{incomplete}
     		AND
     				deadline &lt; CURRENT_DATE
     				
@@ -202,9 +202,9 @@
     				completed_date = CURRENT_DATE,
     				status = CASE
     			WHEN
-    				deadline &lt; CURRENT_DATE THEN 3
+    				deadline &lt; CURRENT_DATE THEN #{expiredCompleted}
     			WHEN
-    				deadline &gt;= CURRENT_DATE THEN 1
+    				deadline &gt;= CURRENT_DATE THEN #{completed}
     		END
     		
     		WHERE
@@ -222,9 +222,9 @@
     				completed_date = NULL,
     				status = CASE
     			WHEN
-    				deadline &lt; CURRENT_DATE THEN 2
+    				deadline &lt; CURRENT_DATE THEN #{expired}
     			WHEN
-    				deadline &gt;= CURRENT_DATE THEN 0
+    				deadline &gt;= CURRENT_DATE THEN #{incomplete}
     		END
     		
     		WHERE
