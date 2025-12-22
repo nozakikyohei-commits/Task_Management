@@ -63,9 +63,19 @@
 							<td th:text="${task.name}"></td>
 							<td th:text="${task.userId}"></td>
 							<td th:text="${task.user.name}"></td>	<!--Taskエンティティの中にあるuserからnameの情報を取り出す-->
-							<td th:text="${task.importance}"></td>
+							<td>
+								<span th:if="${task.importance == importance.UNSET}">指定なし</span>
+								<span th:if="${task.importance == importance.LOW}">低</span>
+								<span th:if="${task.importance == importance.MEDIUM}">中</span>
+								<span th:if="${task.importance == importance.HIGH}">高</span>
+							</td>
 							<td th:text="${task.deadline}"></td>
-							<td th:text="${task.status}"></td>
+							<td>
+								<span th:if="${task.status == status.INCOMPLETE}" class="badge bg-success">未完了</span>
+				                <span th:if="${task.status == status.COMPLETED}" class="badge bg-success">完了</span>
+				                <span th:if="${task.status == status.EXPIRED}" class="badge bg-danger">期限切れ</span>
+				                <span th:if="${task.status == status.EXPIRED_COMPLETED}" class="badge bg-warning text-dark">期限切れ完了</span>
+							</td>
 							<td th:text="${task.completedDate}"></td>
 							<td th:text="${#temporals.format(task.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
 							<td th:text="${#temporals.format(task.updatedAt, 'yyyy/MM/dd HH:mm')}"></td>
