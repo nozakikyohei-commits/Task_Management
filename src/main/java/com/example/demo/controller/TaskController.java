@@ -91,13 +91,15 @@ public class TaskController {
 	 */
 	@GetMapping(AppConst.Url.VIEW_TASKS_CALENDAR)
 	public String viewCalendar(@AuthenticationPrincipal CustomUserDetails userDetails,
-						Model model) {
+							   @RequestParam(name = "tab", defaultValue = "calendar") String tab,
+							   Model model) {
 		
 		User loginUser = userDetails.getUser();
 		
 		taskService.updateStatusToExpired(loginUser.getUserId());
 		
 		model.addAttribute("tasks", taskService.getTasksForCalendar(userDetails.getUser().getUserId()));
+		model.addAttribute("currentTab", tab);
 		
 		return AppConst.View.VIEW_TASKS_CALENDAR;
 	}
@@ -107,8 +109,9 @@ public class TaskController {
 	 */
 	@GetMapping(AppConst.Url.VIEW_TASKS_MEMOS)
 	public String viewMemo(@AuthenticationPrincipal CustomUserDetails userDetails,
-							EditMemoForm form,
-							Model model) {
+						   @RequestParam(name = "tab", defaultValue = "memos") String tab,
+						   EditMemoForm form,
+						   Model model) {
 		
 		User loginUser = userDetails.getUser();
 		Memo memo = memoService.getByUserId(loginUser.getUserId());
@@ -116,6 +119,7 @@ public class TaskController {
 		
 		model.addAttribute("memo", memo);
 		model.addAttribute("form", form);
+		model.addAttribute("currentTab", tab);
 		
 		return AppConst.View.VIEW_TASKS_MEMOS;
 	}
