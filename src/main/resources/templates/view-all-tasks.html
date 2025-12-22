@@ -53,7 +53,13 @@
 					</thead>
 					<tbody>
 						<tr th:each="task : ${tasks}">
-							<td th:text="${task.taskId}"></td>
+							<td>
+								<!--各タスクの編集画面に遷移できるよう、リクエストパラメータにタスクIDを持たせる-->
+								<a th:href="@{|${url.EDIT_TASK}/${task.taskId}|}" 
+								   th:text="${task.taskId}" 
+								   class="text-decoration-none text-dark">
+								</a>
+							</td>
 							<td th:text="${task.name}"></td>
 							<td th:text="${task.userId}"></td>
 							<td th:text="${task.user.name}"></td>	<!--Taskエンティティの中にあるuserからnameの情報を取り出す-->
