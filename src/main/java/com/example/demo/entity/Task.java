@@ -18,7 +18,7 @@ public class Task {
 	private LocalDate completedDate;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	
+	//タスクから見たユーザーとの関係は1対1であるため、リストではなく単体のユーザーを格納できるよう設定
 	private User user;
 
 }

@@ -40,6 +40,10 @@ public class TaskService {
 		return taskMapper.getCompletedTasksByUserId(userId, sort, order);
 	}
 	
+	public List<Task> getAllTasks(String sort, String order) {
+		return taskMapper.getAllTasks(sort, order);
+	}
+	
 	@Transactional(readOnly = false)
 	public void create(CreateTaskForm form, int userId) {
 		

@@ -25,6 +25,12 @@ public interface TaskMapper {
 		    @Param("sort") String sort, 
 		    @Param("order") String order
 	);
+	
+	List<Task> getAllTasks(
+			@Param("sort") String sort, 
+		    @Param("order") String order
+	);
+	
 	void create(Task task);
 	
 	void update(Task task);

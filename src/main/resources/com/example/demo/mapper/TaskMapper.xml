@@ -20,6 +20,15 @@
 		<result column="updated_at" property="updatedAt"/>
 		
 		<!-- association,collectionは必要に応じて書き加える -->
+		<!-- Tankエンティティの中にあるUser userに情報を加える -->
+		<association property="user" resultMap="UserResultMap"></association>
+	
+	</resultMap>
+	
+	<resultMap type="com.example.demo.entity.User" id="UserResultMap">
+		
+		<id column="user_id" property="userId"/>
+		<result column="user_name" property="name"/>
 	
 	</resultMap>
 	
@@ -99,6 +108,38 @@
 			    <if test="order == 'desc'">DESC</if>
 			    
 			    ,completed_date DESC
+		
+		</select>
+		
+		<select id="getAllTasks" resultType="com.example.demo.entity.Task" resultMap="TaskResultMap">
+		
+			SELECT
+					t.task_id,
+					t.user_id,
+					t.name,
+					t.importance,
+					t.deadline,
+					t.status,
+					t.completed_date,
+					t.created_at,
+					t.updated_at,
+					u.name AS user_name
+			FROM
+					tasks t
+			LEFT JOIN
+					users u
+			ON
+					t.user_id = u.user_id
+			ORDER BY
+				<choose>
+			        <when test="sort == 'taskId'">task_id</when>
+			        <when test="sort == 'userId'">user_id</when>
+			        <otherwise>task_id</otherwise>
+			    </choose>
+			    
+			    <if test="order == 'asc'">ASC</if>
+			    <if test="order == 'desc'">DESC</if>
+					,t.task_id DESC
 		
 		</select>
 		

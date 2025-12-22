@@ -5,9 +5,69 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>全タスク表示画面</title>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+		<link th:href="@{/css/style.css}" rel="stylesheet">
 	</head>
 	
 	<body>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+		
+		<header th:replace="~{common/header :: header_fragment}"></header>
+		
+		<main>
+			
+			<div class="mx-2" 
+				 th:with="url=${T(com.example.demo.constant.AppConst.Url)},
+				 		  importance=${T(com.example.demo.constant.AppConst.TaskImportance)},
+				 		  status=${T(com.example.demo.constant.AppConst.TaskStatus)}">
+				
+				<h1 class="mt-4">全タスク一覧</h1>
+				
+				<table class="text-center table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>
+								<a class="sort-link"
+								   th:href="@{${url.VIEW_ALL_TASKS}(sort='taskId', order=${currentSort == 'taskId' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+									タスクID
+									<span th:if="${currentSort == 'taskId'}"
+										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}"></span>
+								</a>
+							</th>
+							<th>タスク名</th>
+							<th>
+								<a class="sort-link"
+								   th:href="@{${url.VIEW_ALL_TASKS}(sort='userId', order=${currentSort == 'userId' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+									ユーザーID
+									<span th:if="${currentSort == 'userId'}"
+										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}"></span>
+								</a>
+							</th>
+							<th>ユーザー名</th>
+							<th>重要度</th>
+							<th>期限</th>
+							<th>状態</th>
+							<th>完了日</th>
+							<th>作成日</th>
+							<th>更新日</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="task : ${tasks}">
+							<td th:text="${task.taskId}"></td>
+							<td th:text="${task.name}"></td>
+							<td th:text="${task.userId}"></td>
+							<td th:text="${task.user.name}"></td>	<!--Taskエンティティの中にあるuserからnameの情報を取り出す-->
+							<td th:text="${task.importance}"></td>
+							<td th:text="${task.deadline}"></td>
+							<td th:text="${task.status}"></td>
+							<td th:text="${task.completedDate}"></td>
+							<td th:text="${#temporals.format(task.createdAt, 'yyyy/MM/dd HH:mm')}"></td>
+							<td th:text="${#temporals.format(task.updatedAt, 'yyyy/MM/dd HH:mm')}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+		</main>
 	</body>
 </html>

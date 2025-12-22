@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -199,12 +201,38 @@ public class TaskController {
 		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}
 	
+	/*
+	 * タスク削除
+	 */
 	@PostMapping(AppConst.Url.EDIT_TASK + "/{taskId}/delete")
 	public String deleteTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
 		
 		taskService.delete(taskId, userDetails.getUser().getUserId());
 		
 		return "redirect:" + AppConst.Url.VIEW_TASKS;
+	}
+	
+	/*
+	 * 全タスク表示画面の表示
+	 */
+	@GetMapping(AppConst.Url.VIEW_ALL_TASKS)
+	public String viewAllTasks(@AuthenticationPrincipal CustomUserDetails userDetails,
+							   @RequestParam(name = "sort", defaultValue = "taskId") String sort,
+							   @RequestParam(name = "order", defaultValue = "asc") String order,
+							   Model model) {
+		
+		int userRole = userDetails.getUser().getRole();
+		
+		if(userRole != AppConst.UserRole.ADMIN) {
+			return "error/403";
+		}
+		
+		List<Task> tasks = taskService.getAllTasks(sort, order);
+		model.addAttribute("tasks", tasks);
+		model.addAttribute("currentSort", sort);
+		model.addAttribute("currentOrder", order);
+		
+		return AppConst.View.VIEW_ALL_TASKS;
 	}
 
 }
