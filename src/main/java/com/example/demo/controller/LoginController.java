@@ -14,7 +14,7 @@ public class LoginController {
 	
 	@GetMapping
 	public String view(@ModelAttribute("mailAddress") String mailAddress,
-						@ModelAttribute("form") LoginForm form) {
+					   @ModelAttribute("form") LoginForm form) {
 			
 		form.setMailAddress(mailAddress);	//ユーザー新規登録画面で入力したメールアドレスを受け取ってformにセット
 		return AppConst.View.LOGIN;

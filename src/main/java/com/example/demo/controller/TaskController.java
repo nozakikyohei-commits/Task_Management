@@ -56,8 +56,8 @@ public class TaskController {
 	        taskService.updateStatusToExpired(userId); //更新処理はこっちだけでOK（「期限切れ」への変更対象は「未完了」のもののみであるため）
 	        model.addAttribute("tasks", taskService.getIncompleteTasksByUserId(userId, sort, order));
 	    }
-		
-		model.addAttribute("currentTab", tab);	//tabによって表示内容を変更するために渡す
+		//ビュー側で現在のパラメータを参照して次回のリクエストに利用できるように渡しておく
+		model.addAttribute("currentTab", tab);
 		model.addAttribute("currentSort", sort);
 		model.addAttribute("currentOrder", order);
 		

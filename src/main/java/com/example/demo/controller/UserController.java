@@ -35,9 +35,7 @@ public class UserController {
 	
 	@PostMapping(AppConst.Url.CREATE_USER)
 	public String create(@Valid @ModelAttribute("form") RegistUserForm form, BindingResult result, 
-													RedirectAttributes redirectAttributes, Model model) {
-		
-		//System.out.println("受信したメールアドレス: [" + form.getMailAddress() + "]");
+						 RedirectAttributes redirectAttributes, Model model) {
 		
 		if (userService.checkMailAddress(form.getMailAddress())) {
 			//メールアドレスが重複していた場合、html側でフィールド名がmailAddressのものに対してエラーメッセージをセット
