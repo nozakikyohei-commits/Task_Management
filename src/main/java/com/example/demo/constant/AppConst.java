@@ -40,6 +40,7 @@ public class AppConst {
         public static final int LOW = 1;
         public static final int MEDIUM = 2;
         public static final int HIGH = 3;
+        public static final int UNSELECTED = 4;
     }
 	
 	public static class TaskStatus {
@@ -47,6 +48,7 @@ public class AppConst {
         public static final int COMPLETED = 1;
         public static final int EXPIRED = 2;
         public static final int EXPIRED_COMPLETED = 3;
+        public static final int UNSELECTED = 4;
     }
 
 }
