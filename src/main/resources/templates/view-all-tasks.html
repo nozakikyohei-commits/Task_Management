@@ -22,33 +22,91 @@
 				
 				<h1 class="mt-4">全タスク一覧</h1>
 				
+				<form th:action="@{|${url.VIEW_ALL_TASKS}/search|}" th:object="${form}" method="get">
+					
+					<div class="form-row d-flex my-4 gap-1">
+						<div class="form-group">
+							<label for="taskId">タスクID</label>
+							<input id="taskId" class="form-control" type="number" th:field="*{taskId}" placeholder="タスクID" />
+						</div>
+						<div class="form-group">
+							<label for="taskName">タスク名</label>
+							<input id="taskName" class="form-control" type="search" th:field="*{taskName}" placeholder="タスク名" />
+						</div>
+						<div class="form-group">
+							<label for="userId">ユーザーID</label>
+							<input id="userId" class="form-control" type="number" th:field="*{userId}" placeholder="ユーザーID" />
+						</div>
+						<div class="form-group">
+							<label for="userName">ユーザー名</label>
+							<input id="userName" class="form-control" type="search" th:field="*{userName}" placeholder="ユーザー名" />
+						</div>
+						<div class="form-group">
+							<label for="importance">重要度</label>
+							<select id="importance"  class="form-control" th:field="*{importance}">
+								<option th:value="${importance.UNSELECTED}">選択してください</option>
+								<option th:value="${importance.UNSET}">指定なし</option>
+								<option th:value="${importance.LOW}">低</option>
+								<option th:value="${importance.MEDIUM}">中</option>
+								<option th:value="${importance.HIGH}">高</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="deadline">期限</label>
+							<input id="deadline" class="form-control" type="date" th:field="*{deadline}" placeholder="期限" />
+						</div>
+						<div class="form-group">
+							<label for="status">状態</label>
+							<select id="status"  class="form-control" th:field="*{status}">
+								<option th:value="${status.UNSELECTED}">選択してください</option>
+								<option th:value="${status.INCOMPLETE}">未完了</option>
+								<option th:value="${status.COMPLETED}">完了</option>
+								<option th:value="${status.EXPIRED}">期限切れ</option>
+								<option th:value="${status.EXPIRED_COMPLETED}">期限切れ完了</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="completedDate">完了日</label>
+							<input id="completedDate" class="form-control" type="date" th:field="*{completedDate}" placeholder="完了日" />
+						</div>
+						<div class="form-group">
+							<label for="search-button" class="invisible">検索</label>
+							<button id="search-button" class="btn btn-primary form-control" type="submit">検索</button>
+						</div>
+						
+					</div>
+					
+				</form>
+				
 				<table class="text-center table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>
+							<th class="bg-primary-subtle">
 								<a class="sort-link"
 								   th:href="@{${url.VIEW_ALL_TASKS}(sort='taskId', order=${currentSort == 'taskId' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 									タスクID
 									<span th:if="${currentSort == 'taskId'}"
-										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}"></span>
+										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}">
+									</span>
 								</a>
 							</th>
-							<th>タスク名</th>
-							<th>
+							<th class="bg-primary-subtle">タスク名</th>
+							<th class="bg-primary-subtle">
 								<a class="sort-link"
 								   th:href="@{${url.VIEW_ALL_TASKS}(sort='userId', order=${currentSort == 'userId' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 									ユーザーID
 									<span th:if="${currentSort == 'userId'}"
-										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}"></span>
+										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}">
+									</span>
 								</a>
 							</th>
-							<th>ユーザー名</th>
-							<th>重要度</th>
-							<th>期限</th>
-							<th>状態</th>
-							<th>完了日</th>
-							<th>作成日</th>
-							<th>更新日</th>
+							<th class="bg-primary-subtle">ユーザー名</th>
+							<th class="bg-primary-subtle">重要度</th>
+							<th class="bg-primary-subtle">期限</th>
+							<th class="bg-primary-subtle">状態</th>
+							<th class="bg-primary-subtle">完了日</th>
+							<th class="bg-primary-subtle">作成日</th>
+							<th class="bg-primary-subtle">更新日</th>
 						</tr>
 					</thead>
 					<tbody>

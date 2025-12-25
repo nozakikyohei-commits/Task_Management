@@ -143,6 +143,64 @@
 		
 		</select>
 		
+		<select id="searchTasks" resultType="com.example.demo.entity.Task" resultMap="TaskResultMap">
+		
+			SELECT
+					t.task_id,
+					t.user_id,
+					t.name,
+					t.importance,
+					t.deadline,
+					t.status,
+					t.completed_date,
+					t.created_at,
+					t.updated_at,
+					u.name AS user_name
+			FROM
+					tasks t
+			LEFT JOIN
+					users u
+			ON
+					t.user_id = u.user_id
+			<where>
+				<if test="task.taskId != null and task.taskId != '' and task.taskId != 0">
+					t.task_id = #{task.taskId}
+				</if>
+				<if test="task.userId != null and task.userId != '' and task.userId != 0">
+					AND t.user_id = #{task.userId}
+				</if>
+				<if test="task.name != null and task.name != ''">
+					AND t.name LIKE CONCAT('%', #{task.name}, '%')
+				</if>
+				<if test="task.importance != null and task.importance != 4">
+					AND t.importance = #{task.importance}
+				</if>
+				<if test="task.deadline != null">
+					AND t.deadline &lt; #{task.deadline}
+				</if>
+				<if test="task.status != null and task.status != 4">
+					AND t.status = #{task.status}
+				</if>
+				<if test="task.completedDate != null">
+					AND t.completed_date &lt; #{task.completedDate}
+				</if>
+				<if test="userName != null and userName != ''">
+					AND u.name LIKE CONCAT('%', #{userName}, '%')
+				</if>
+			</where>
+			ORDER BY
+				<choose>
+			        <when test="sort == 'taskId'">task_id</when>
+			        <when test="sort == 'userId'">user_id</when>
+			        <otherwise>task_id</otherwise>
+			    </choose>
+			    
+			    <if test="order == 'asc'">ASC</if>
+			    <if test="order == 'desc'">DESC</if>
+					,t.task_id DESC
+		
+		</select>
+		
 		<insert id="create">
 		
 			INSERT INTO tasks(

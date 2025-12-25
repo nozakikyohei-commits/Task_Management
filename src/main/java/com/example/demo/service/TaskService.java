@@ -10,6 +10,7 @@ import com.example.demo.constant.AppConst;
 import com.example.demo.entity.Task;
 import com.example.demo.form.CreateTaskForm;
 import com.example.demo.form.EditTaskForm;
+import com.example.demo.form.SearchTaskForm;
 import com.example.demo.mapper.TaskMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,21 @@ public class TaskService {
 	
 	public List<Task> getAllTasks(String sort, String order) {
 		return taskMapper.getAllTasks(sort, order);
+	}
+	
+	public List<Task> searchTasks(SearchTaskForm form, String sort, String order) {
+		
+		Task task = new Task();
+		
+		task.setTaskId(form.getTaskId());
+		task.setName(form.getTaskName());
+		task.setUserId(form.getUserId());
+		task.setImportance(form.getImportance());
+		task.setDeadline(form.getDeadline());
+		task.setStatus(form.getStatus());
+		task.setCompletedDate(form.getCompletedDate());
+		
+		return taskMapper.searchTasks(task, form.getUserName(), sort, order);
 	}
 	
 	@Transactional(readOnly = false)

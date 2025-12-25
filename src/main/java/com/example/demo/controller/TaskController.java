@@ -20,6 +20,7 @@ import com.example.demo.entity.User;
 import com.example.demo.form.CreateTaskForm;
 import com.example.demo.form.EditMemoForm;
 import com.example.demo.form.EditTaskForm;
+import com.example.demo.form.SearchTaskForm;
 import com.example.demo.service.MemoService;
 import com.example.demo.service.TaskService;
 
@@ -246,7 +247,11 @@ public class TaskController {
 			return "error/403";
 		}
 		
-		return "redirect:" + AppConst.Url.VIEW_TASKS;
+		if (isAdmin) {
+		    return "redirect:" + AppConst.Url.VIEW_ALL_TASKS;
+		} else {
+		    return "redirect:" + AppConst.Url.VIEW_TASKS;
+		}
 	}
 	
 	/*
@@ -254,6 +259,7 @@ public class TaskController {
 	 */
 	@GetMapping(AppConst.Url.VIEW_ALL_TASKS)
 	public String viewAllTasks(@AuthenticationPrincipal CustomUserDetails userDetails,
+							   @ModelAttribute("form") SearchTaskForm form,
 							   @RequestParam(name = "sort", defaultValue = "taskId") String sort,
 							   @RequestParam(name = "order", defaultValue = "asc") String order,
 							   Model model) {
@@ -265,6 +271,27 @@ public class TaskController {
 		}
 		
 		List<Task> tasks = taskService.getAllTasks(sort, order);
+		model.addAttribute("tasks", tasks);
+		model.addAttribute("currentSort", sort);
+		model.addAttribute("currentOrder", order);
+		
+		return AppConst.View.VIEW_ALL_TASKS;
+	}
+	
+	@GetMapping(AppConst.Url.VIEW_ALL_TASKS + "/search")
+	public String searchTasks(@AuthenticationPrincipal CustomUserDetails userDetails,
+							  @ModelAttribute("form") SearchTaskForm form,
+							  @RequestParam(name = "sort", defaultValue = "taskId") String sort,
+							  @RequestParam(name = "order", defaultValue = "asc") String order,
+							  Model model) {
+		
+		int userRole = userDetails.getUser().getRole();
+		
+		if(userRole != AppConst.UserRole.ADMIN) {
+			return "error/403";
+		}
+		
+		List<Task> tasks = taskService.searchTasks(form, sort, order);
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("currentSort", sort);
 		model.addAttribute("currentOrder", order);

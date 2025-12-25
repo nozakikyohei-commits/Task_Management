@@ -39,6 +39,13 @@ public interface TaskMapper {
 		    @Param("order") String order
 	);
 	
+	List<Task> searchTasks(
+			@Param("task") Task task,
+			@Param("userName") String userName,
+			@Param("sort") String sort, 
+		    @Param("order") String order
+	);
+	
 	void create(Task task);
 	
 	void update(Task task);
