@@ -28,7 +28,7 @@
 				<table class="text-center table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>
+							<th class="bg-primary-subtle">
 								<a class="sort-link"
 								   th:href="@{${url.VIEW_ALL_USERS}(sort='userId', order=${currentSort == 'userId' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 									ユーザーID
@@ -36,9 +36,9 @@
 									  th:text="${currentOrder == 'asc' ? '▲' : '▼'}"></span>
 								</a>
 							</th>
-							<th>ユーザー名</th>
-							<th>メールアドレス</th>
-							<th>
+							<th class="bg-primary-subtle">ユーザー名</th>
+							<th class="bg-primary-subtle">メールアドレス</th>
+							<th class="bg-primary-subtle">
 								<a class="sort-link"
 								   th:href="@{${url.VIEW_ALL_USERS}(sort='role', order=${currentSort == 'role' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 									権限
@@ -46,9 +46,9 @@
 									  th:text="${currentOrder == 'asc' ? '▲' : '▼'}"></span>
 								</a>
 							</th>
-							<th>登録日時</th>
-							<th>更新日時</th>
-							<th>操作</th>
+							<th class="bg-primary-subtle">登録日時</th>
+							<th class="bg-primary-subtle">更新日時</th>
+							<th class="bg-primary-subtle">操作</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -27,8 +27,8 @@
 			<table class="text-center table table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>タスク名</th> 
-						<th>
+						<th class="bg-primary-subtle">タスク名</th> 
+						<th class="bg-primary-subtle">
 							<!--リクエストパラメータに現在のタブ、何を基準にするか、（現在のパラメータを参照し）昇順・降順どちらにするかを持たせコントローラーに送る-->
 							<a class="sort-link"
 							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='deadline', order=${currentSort == 'deadline' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
@@ -39,7 +39,7 @@
 							</a>
 						</th>
 
-						<th>
+						<th class="bg-primary-subtle">
 							<a class="sort-link"
 							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='importance', order=${currentSort == 'importance' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 								重要度
@@ -48,7 +48,7 @@
 							</a>
 						</th>
 
-						<th>
+						<th class="bg-primary-subtle">
 							<a class="sort-link"
 							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='status', order=${currentSort == 'status' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 								状態
@@ -57,9 +57,9 @@
 							</a>
 						</th>
 
-						<th>操作</th>
+						<th class="bg-primary-subtle">操作</th>
             			
-						<th th:if="${currentTab == 'completed'}">
+						<th class="bg-primary-subtle" th:if="${currentTab == 'completed'}">
 							<a class="sort-link"
 							   th:href="@{${url.VIEW_TASKS}(tab=${currentTab}, sort='completedDate', order=${currentSort == 'completedDate' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
 								完了日
