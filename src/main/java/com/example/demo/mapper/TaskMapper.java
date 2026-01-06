@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.demo.entity.Task;
+import com.example.demo.form.SearchTaskForm;
 
 @Mapper
 public interface TaskMapper {
@@ -34,14 +35,8 @@ public interface TaskMapper {
 			@Param("expiredCompleted") int expiredCompleted
 	);
 	
-	List<Task> getAllTasks(
-			@Param("sort") String sort, 
-		    @Param("order") String order
-	);
-	
 	List<Task> searchTasks(
-			@Param("task") Task task,
-			@Param("userName") String userName,
+			@Param("form") SearchTaskForm form,
 			@Param("sort") String sort, 
 		    @Param("order") String order
 	);

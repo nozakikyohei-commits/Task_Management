@@ -41,23 +41,9 @@ public class TaskService {
 		return taskMapper.getCompletedTasksByUserId(userId, sort, order, AppConst.TaskStatus.COMPLETED, AppConst.TaskStatus.EXPIRED_COMPLETED);
 	}
 	
-	public List<Task> getAllTasks(String sort, String order) {
-		return taskMapper.getAllTasks(sort, order);
-	}
-	
 	public List<Task> searchTasks(SearchTaskForm form, String sort, String order) {
 		
-		Task task = new Task();
-		
-		task.setTaskId(form.getTaskId());
-		task.setName(form.getTaskName());
-		task.setUserId(form.getUserId());
-		task.setImportance(form.getImportance());
-		task.setDeadline(form.getDeadline());
-		task.setStatus(form.getStatus());
-		task.setCompletedDate(form.getCompletedDate());
-		
-		return taskMapper.searchTasks(task, form.getUserName(), sort, order);
+		return taskMapper.searchTasks(form, sort, order);
 	}
 	
 	@Transactional(readOnly = false)
