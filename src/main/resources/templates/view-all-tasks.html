@@ -6,6 +6,7 @@
 		<title>全タスク表示画面</title>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 		<link th:href="@{/css/style.css}" rel="stylesheet">
+		<script th:src="@{/js/toast.js}"></script>
 	</head>
 	
 	<body>
@@ -22,7 +23,39 @@
 				
 				<h1 class="mt-4">全タスク一覧</h1>
 				
-				<form th:action="@{|${url.VIEW_ALL_TASKS}/search|}" th:object="${form}" method="get">
+				<!--toast-container：トーストを配置するための箱
+					position-fixed：画面のスクロールに影響されず常に画面内の決まった位置に固定
+					top-0：画面の一番上に配置
+					end-0：画面の一番右に配置-->
+				<div class="toast-container position-fixed top-0 end-0">
+  					
+  					<!--JavaScript側での判別用にidを設定し、Bootstrapへの判別用にclassを設定（最初は隠しておくなどの指令が出る）
+  						data-bs-delay="3000"：表示されてから3秒後に消す-->
+					<div id="resultToast" class="toast" data-bs-delay="3000">
+						<div class="toast-header">
+							<!--me-auto：右側の余白を自動化し、後に続く要素が右端に配置される-->
+					    	<strong class="me-auto">インフォメーション</strong>
+					    	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+					    </div>
+					    <div class="toast-body">
+					      <span class="fw-bold" th:text="${count}">0</span>件のタスクを表示しています
+					    </div>
+					</div>
+					
+					<div id="updateTaskToast" class="toast" data-bs-delay="3000" th:if="${successMessage}">
+						<div class="toast-header bg-danger">
+							<!--me-auto：右側の余白を自動化し、後に続く要素が右端に配置される-->
+					    	<strong class="me-auto">インフォメーション</strong>
+					    	<button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+					    </div>
+					    <div class="toast-body">
+					      <span th:text="${successMessage}"></span>
+					    </div>
+					</div>
+				
+				</div>
+				
+				<form th:action="@{|${url.VIEW_ALL_TASKS}}" th:object="${form}" method="get">
 					
 					<div class="form-row d-flex my-4 gap-1">
 						<div class="form-group">
@@ -83,7 +116,17 @@
 						<tr>
 							<th class="bg-primary-subtle">
 								<a class="sort-link"
-								   th:href="@{${url.VIEW_ALL_TASKS}(sort='taskId', order=${currentSort == 'taskId' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+								   th:href="@{${url.VIEW_ALL_TASKS}(
+									   sort='taskId',
+									   order=${currentSort == 'taskId' && currentOrder == 'asc' ? 'desc' : 'asc'},
+									   taskId=${form.taskId},
+							           taskName=${form.taskName},
+							           userId=${form.userId},
+							           userName=${form.userName},
+							           importance=${form.importance},
+							           deadline=${form.deadline},
+							           status=${form.status},
+							           completedDate=${form.completedDate})}">
 									タスクID
 									<span th:if="${currentSort == 'taskId'}"
 										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}">
@@ -93,7 +136,17 @@
 							<th class="bg-primary-subtle">タスク名</th>
 							<th class="bg-primary-subtle">
 								<a class="sort-link"
-								   th:href="@{${url.VIEW_ALL_TASKS}(sort='userId', order=${currentSort == 'userId' && currentOrder == 'asc' ? 'desc' : 'asc'})}">
+								   th:href="@{${url.VIEW_ALL_TASKS}(
+									   sort='userId',
+									   order=${currentSort == 'userId' && currentOrder == 'asc' ? 'desc' : 'asc'},
+									   taskId=${form.taskId},
+							           taskName=${form.taskName},
+							           userId=${form.userId},
+							           userName=${form.userName},
+							           importance=${form.importance},
+							           deadline=${form.deadline},
+							           status=${form.status},
+							           completedDate=${form.completedDate})}">
 									ユーザーID
 									<span th:if="${currentSort == 'userId'}"
 										  th:text="${currentOrder == 'asc' ?  '▲' : '▼'}">
