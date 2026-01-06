@@ -13,11 +13,13 @@ import lombok.Setter;
 @Setter
 public class SearchTaskForm {
 	
-	private int taskId;
+	//nullを許容しエラーを避けるため、intではなくIntegerにする
+	private Integer taskId;
 	
 	private String userName;
 	
-	private int userId;
+	//nullを許容しエラーを避けるため、intではなくIntegerにする
+	private Integer userId;
 	
 	private String taskName;
 	
