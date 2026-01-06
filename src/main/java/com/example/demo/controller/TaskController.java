@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.authentication.CustomUserDetails;
 import com.example.demo.constant.AppConst;
@@ -69,9 +70,12 @@ public class TaskController {
 	 * 「完了」ボタン押下によるステータス変更
 	 */
 	@PostMapping(AppConst.Url.VIEW_TASKS + "/{taskId}/complete")
-	public String updateTaskStatusToCompleted(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	public String updateTaskStatusToCompleted(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
+											  RedirectAttributes redirectAttributes) {
 		
 		taskService.updateStatusToCompleted(taskId, userDetails.getUser().getUserId());
+		Task task = taskService.getsTaskById(taskId);
+		redirectAttributes.addFlashAttribute("successMessage", task.getName() + "のステータスを変更しました");
 		
 		return "redirect:" + AppConst.Url.VIEW_TASKS + "?tab=completed";
 	}
@@ -80,9 +84,12 @@ public class TaskController {
 	 * 「未完了に戻す」ボタンによるステータス変更
 	 */
 	@PostMapping(AppConst.Url.VIEW_TASKS + "/{taskId}/incomplete")
-	public String updateTaskStatusToIncompleted(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	public String updateTaskStatusToIncompleted(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
+												RedirectAttributes redirectAttributes) {
 		
 		taskService.updateStatusToIncompleted(taskId, userDetails.getUser().getUserId());
+		Task task = taskService.getsTaskById(taskId);
+		redirectAttributes.addFlashAttribute("successMessage", task.getName() + "のステータスを変更しました");
 		
 		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}
@@ -132,7 +139,7 @@ public class TaskController {
 	 */
 	@PostMapping(AppConst.Url.VIEW_TASKS_MEMOS + "/{memoId}")
 	public String updateMemo(@PathVariable int memoId, @AuthenticationPrincipal CustomUserDetails userDetails,
-								EditMemoForm form, Model model) {
+							 EditMemoForm form, Model model) {
 		
 		memoService.update(form.getContent(), memoId, userDetails.getUser().getUserId());
 		
@@ -154,7 +161,8 @@ public class TaskController {
 	 */
 	@PostMapping(AppConst.Url.CREATE_TASK)
 	public String createTask(@AuthenticationPrincipal CustomUserDetails userDetails,
-								@Valid @ModelAttribute("form") CreateTaskForm form, BindingResult result, Model model) {
+							 @Valid @ModelAttribute("form") CreateTaskForm form, BindingResult result,
+							 RedirectAttributes redirectAttributes, Model model) {
 		
 		if (result.hasErrors()) {
 			//フォワード処理：リクエストを飛ばすのではなく、create-user.htmlというテンプレートを使って画面を作りなおす
@@ -163,6 +171,7 @@ public class TaskController {
 		}
 		
 		taskService.create(form, userDetails.getUser().getUserId());
+		redirectAttributes.addFlashAttribute("successMessage", form.getName() + "を作成しました。");
 		
 		return "redirect:" + AppConst.Url.VIEW_TASKS;
 	}
@@ -201,7 +210,8 @@ public class TaskController {
 	 */
 	@PostMapping(AppConst.Url.EDIT_TASK + "/{taskId}")
 	public String updateTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
-								@Valid @ModelAttribute("form") EditTaskForm form, BindingResult result, Model model) {
+							 RedirectAttributes redirectAttributes,
+							 @Valid @ModelAttribute("form") EditTaskForm form, BindingResult result, Model model) {
 		
 		Task task = taskService.getsTaskById(taskId);
 		User loginUser = userDetails.getUser();
@@ -222,8 +232,10 @@ public class TaskController {
 		}
 		
 		if (isAdmin) {
+			redirectAttributes.addFlashAttribute("successMessage", "ID：" + taskId + "のタスクを更新しました。");
 		    return "redirect:" + AppConst.Url.VIEW_ALL_TASKS;
 		} else {
+			redirectAttributes.addFlashAttribute("successMessage", form.getName() + "のタスク情報を更新しました。");
 		    return "redirect:" + AppConst.Url.VIEW_TASKS;
 		}
 	}
@@ -232,7 +244,8 @@ public class TaskController {
 	 * タスク削除
 	 */
 	@PostMapping(AppConst.Url.EDIT_TASK + "/{taskId}/delete")
-	public String deleteTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+	public String deleteTask(@PathVariable int taskId, @AuthenticationPrincipal CustomUserDetails userDetails,
+							 RedirectAttributes redirectAttributes, Model model) {
 		
 		Task task = taskService.getsTaskById(taskId);
 		User loginUser = userDetails.getUser();
@@ -248,14 +261,16 @@ public class TaskController {
 		}
 		
 		if (isAdmin) {
+			redirectAttributes.addFlashAttribute("successMessage", "ID：" + taskId + "のタスクを削除しました。");
 		    return "redirect:" + AppConst.Url.VIEW_ALL_TASKS;
 		} else {
+			redirectAttributes.addFlashAttribute("successMessage", task.getName() + "を削除しました。");
 		    return "redirect:" + AppConst.Url.VIEW_TASKS;
 		}
 	}
 	
 	/*
-	 * 全タスク表示画面の表示
+	 * 全タスク表示画面の表示（検索込み）
 	 */
 	@GetMapping(AppConst.Url.VIEW_ALL_TASKS)
 	public String viewAllTasks(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -270,31 +285,11 @@ public class TaskController {
 			return "error/403";
 		}
 		
-		List<Task> tasks = taskService.getAllTasks(sort, order);
-		model.addAttribute("tasks", tasks);
-		model.addAttribute("currentSort", sort);
-		model.addAttribute("currentOrder", order);
-		
-		return AppConst.View.VIEW_ALL_TASKS;
-	}
-	
-	@GetMapping(AppConst.Url.VIEW_ALL_TASKS + "/search")
-	public String searchTasks(@AuthenticationPrincipal CustomUserDetails userDetails,
-							  @ModelAttribute("form") SearchTaskForm form,
-							  @RequestParam(name = "sort", defaultValue = "taskId") String sort,
-							  @RequestParam(name = "order", defaultValue = "asc") String order,
-							  Model model) {
-		
-		int userRole = userDetails.getUser().getRole();
-		
-		if(userRole != AppConst.UserRole.ADMIN) {
-			return "error/403";
-		}
-		
 		List<Task> tasks = taskService.searchTasks(form, sort, order);
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("currentSort", sort);
 		model.addAttribute("currentOrder", order);
+		model.addAttribute("count", tasks.size());
 		
 		return AppConst.View.VIEW_ALL_TASKS;
 	}

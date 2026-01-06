@@ -51,6 +51,7 @@ public class UserController {
 		userService.create(form);
 		
 		redirectAttributes.addFlashAttribute("mailAddress", form.getMailAddress());	//リダイレクト先に入力値を渡すための処理
+		redirectAttributes.addFlashAttribute("successMessage", "アカウント登録が完了しました。ログインしてください。");
 		
 		//リダイレクト処理：下記のURLにGETリクエストを送る
 		return "redirect:" + AppConst.Url.LOGIN;
