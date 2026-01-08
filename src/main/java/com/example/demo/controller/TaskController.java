@@ -222,23 +222,19 @@ public class TaskController {
 		
 		Task task = taskService.getsTaskById(taskId);
 		User loginUser = userDetails.getUser();
-		boolean isSameUser = (task.getUserId() == loginUser.getUserId());
-		boolean isAdmin = loginUser.getRole() == AppConst.UserRole.ADMIN;
+		
+		if (!hasPermission(task, loginUser)) {
+	        return "error/403";
+	    }
 		
 		if (result.hasErrors()) {
 			model.addAttribute("task", task);
 			return AppConst.View.EDIT_TASK;
 		}
 		
-		if(isSameUser) {
-			taskService.update(form, taskId, userDetails.getUser().getUserId());
-		} else if(isAdmin) {
-			taskService.update(form, taskId, task.getUserId());
-		} else {
-			return "error/403";
-		}
+		taskService.update(form, taskId, task.getUserId());
 		
-		if (isAdmin) {
+		if (loginUser.getRole() == AppConst.UserRole.ADMIN) {
 			redirectAttributes.addFlashAttribute("successMessage", "ID：" + taskId + "のタスクを更新しました。");
 		    return "redirect:" + AppConst.Url.VIEW_ALL_TASKS;
 		} else {
@@ -256,18 +252,14 @@ public class TaskController {
 		
 		Task task = taskService.getsTaskById(taskId);
 		User loginUser = userDetails.getUser();
-		boolean isSameUser = (task.getUserId() == loginUser.getUserId());
-		boolean isAdmin = loginUser.getRole() == AppConst.UserRole.ADMIN;
 		
-		if(isSameUser) {
-			taskService.delete(taskId, loginUser.getUserId());
-		} else if(isAdmin) {
-			taskService.delete(taskId, task.getUserId());
-		} else {
-			return "error/403";
-		}
+		if (!hasPermission(task, loginUser)) {
+	        return "error/403";
+	    }
 		
-		if (isAdmin) {
+		taskService.delete(taskId, task.getUserId());
+		
+		if (loginUser.getRole() == AppConst.UserRole.ADMIN) {
 			redirectAttributes.addFlashAttribute("successMessage", "ID：" + taskId + "のタスクを削除しました。");
 		    return "redirect:" + AppConst.Url.VIEW_ALL_TASKS;
 		} else {
@@ -320,6 +312,13 @@ public class TaskController {
         byte[] csvData = taskService.generateCsvForCompletedTasks(userId);
         
         return createCsvResponse(csvData, "完了済みタスク一覧.csv");
+    }
+    
+    //共通の権限チェックメソッド
+    private boolean hasPermission(Task task, User loginUser) {
+        boolean isSameUser = (task.getUserId() == loginUser.getUserId());
+        boolean isAdmin = loginUser.getRole() == AppConst.UserRole.ADMIN;
+        return isSameUser || isAdmin;
     }
     
     // CSVレスポンス作成用の共通メソッド
