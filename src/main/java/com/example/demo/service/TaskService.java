@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
@@ -130,7 +129,7 @@ public class TaskService {
 	/*
      * CSVデータの作成
      */
-    public byte[] generateCsvForIncompleteTasks(int userId) throws UnsupportedEncodingException {
+    public byte[] generateCsvForIncompleteTasks(int userId) {
         // 出力したいデータを取得（例として未完了タスクを取得）
         // ※必要に応じて検索条件などを含めた全件取得メソッドを使うのも良いです
         List<Task> tasks = taskMapper.getIncompleteTasksByUserId(userId, "deadline", "asc", AppConst.TaskStatus.INCOMPLETE, AppConst.TaskStatus.EXPIRED);
@@ -152,7 +151,7 @@ public class TaskService {
         return addBomToCsv(sb.toString());
     }
     
-    public byte[] generateCsvForCompletedTasks(int userId) throws UnsupportedEncodingException {
+    public byte[] generateCsvForCompletedTasks(int userId) {
         
         List<Task> tasks = taskMapper.getCompletedTasksByUserId(userId, "deadline", "asc", AppConst.TaskStatus.COMPLETED, AppConst.TaskStatus.EXPIRED_COMPLETED);
 
@@ -175,20 +174,26 @@ public class TaskService {
     // 文字列をBOM付きバイト配列に変換する処理
     private byte[] addBomToCsv(String csvContent) {
     	
-    	// csvContentの中身をUTF-8の文字コードに変換したものを格納する
-        byte[] csvBytes = csvContent.getBytes(StandardCharsets.UTF_8);
-        // 上記の配列と結合し、これを最初にコンピュータに読み込ませることでUTF-8として読み込ませる（※WindowsのExcelで開く場合、デフォルトではShift_JISとして読み込もうとし、BOMがないと文字化けすることがあるため）
-        // 0xは16進数であることを示す（10進数でいうと、239,187,191という並び）
-        byte[] bom = {(byte)0xEF, (byte)0xBB, (byte)0xBF};
-        // 最終的に返すための「上記二つがぴったり入る箱」を用意
-        byte[] result = new byte[bom.length + csvBytes.length];
-        // それぞれの引数の意味：(コピー元, コピー元の開始位置, コピー先, コピー先の開始位置, コピーする長さ)
-        // まずは用意した箱の先頭に文字コードを表すbomの中身を格納
-        System.arraycopy(bom, 0, result, 0, bom.length);
-        // 先ほど入れた239,187,191のあとに続くように文字コード化した文字を格納
-        System.arraycopy(csvBytes, 0, result, bom.length, csvBytes.length);
+    	try {
+    		// csvContentの中身をUTF-8の文字コードに変換したものを格納する
+            byte[] csvBytes = csvContent.getBytes(StandardCharsets.UTF_8);
+            // 上記の配列と結合し、これを最初にコンピュータに読み込ませることでUTF-8として読み込ませる（※WindowsのExcelで開く場合、デフォルトではShift_JISとして読み込もうとし、BOMがないと文字化けすることがあるため）
+            // 0xは16進数であることを示す（10進数でいうと、239,187,191という並び）
+            byte[] bom = {(byte)0xEF, (byte)0xBB, (byte)0xBF};
+            // 最終的に返すための「上記二つがぴったり入る箱」を用意
+            byte[] result = new byte[bom.length + csvBytes.length];
+            // それぞれの引数の意味：(コピー元, コピー元の開始位置, コピー先, コピー先の開始位置, コピーする長さ)
+            // まずは用意した箱の先頭に文字コードを表すbomの中身を格納
+            System.arraycopy(bom, 0, result, 0, bom.length);
+            // 先ほど入れた239,187,191のあとに続くように文字コード化した文字を格納
+            System.arraycopy(csvBytes, 0, result, bom.length, csvBytes.length);
 
-        return result;
+            return result;
+
+        } catch (Exception e) {
+            // 万が一エラーが起きたら、システムエラー（RuntimeException）として報告する
+            throw new RuntimeException("CSV作成中にエラーが発生しました", e);
+        }
     }
 
     // CSVエスケープ処理（カンマや改行を含むデータ対策）
@@ -204,19 +209,19 @@ public class TaskService {
     // 重要度の数値を文字に変換
     private String getImportanceText(int importance) {
         switch (importance) {
-            case 1: return "低";
-            case 2: return "中";
-            case 3: return "高";
+            case AppConst.TaskImportance.LOW: return "低";
+            case AppConst.TaskImportance.MEDIUM: return "中";
+            case AppConst.TaskImportance.HIGH: return "高";
             default: return "指定なし";
         }
     }
     
- // 重要度の数値を文字に変換
+    // 重要度の数値を文字に変換
     private String getStatusText(int status) {
         switch (status) {
-            case 1: return "完了";
-            case 2: return "期限切れ";
-            case 3: return "期限切れ完了";
+            case AppConst.TaskStatus.COMPLETED: return "完了";
+            case AppConst.TaskStatus.EXPIRED: return "期限切れ";
+            case AppConst.TaskStatus.EXPIRED_COMPLETED: return "期限切れ完了";
             default: return "未完了";
         }
     }

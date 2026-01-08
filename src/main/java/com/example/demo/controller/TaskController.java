@@ -307,46 +307,37 @@ public class TaskController {
     @GetMapping(AppConst.Url.VIEW_TASKS + "/incomplete-csv")
     public ResponseEntity<byte[]> downloadCsvForIncompleteTasks(@AuthenticationPrincipal CustomUserDetails userDetails) {
         
-        try {
-            int userId = userDetails.getUser().getUserId();
-            // Serviceで作成したCSVデータを取得
-            byte[] csvData = taskService.generateCsvForIncompleteTasks(userId);
-
-            // ファイル名を設定（日本語はそのまま使用できないため、エンコードして英数字の羅列に変換する）
-            String fileName = URLEncoder.encode("未完了タスク一覧.csv", StandardCharsets.UTF_8.name());
-
-            // HTTPヘッダー（ブラウザへの指示書）を作る
-            HttpHeaders headers = new HttpHeaders();
-            // 「これは添付ファイル（attachment）として扱ってね」という指示（「filename*=」でエンコードされたファイル名を指定）
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + fileName);
-            // 「中身の種類はCSVですよ」という指示
-            headers.setContentType(MediaType.parseMediaType("text/csv; charset=UTF-8"));
-
-            // 中身と指示書をセットにして「OK（200番）」で返す
-            return new ResponseEntity<>(csvData, headers, HttpStatus.OK);
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    	int userId = userDetails.getUser().getUserId();
+        byte[] csvData = taskService.generateCsvForIncompleteTasks(userId);
+        
+        return createCsvResponse(csvData, "未完了タスク一覧.csv");
     }
     
     @GetMapping(AppConst.Url.VIEW_TASKS + "/completed-csv")
     public ResponseEntity<byte[]> downloadCsvForCompletedTasks(@AuthenticationPrincipal CustomUserDetails userDetails) {
         
+    	int userId = userDetails.getUser().getUserId();
+        byte[] csvData = taskService.generateCsvForCompletedTasks(userId);
+        
+        return createCsvResponse(csvData, "完了済みタスク一覧.csv");
+    }
+    
+    // CSVレスポンス作成用の共通メソッド
+    private ResponseEntity<byte[]> createCsvResponse(byte[] csvData, String fileName) {
         try {
-            int userId = userDetails.getUser().getUserId();
-            
-            byte[] csvData = taskService.generateCsvForCompletedTasks(userId);
+        	// ファイル名を設定（日本語はそのまま使用できないため、エンコードして英数字の羅列に変換する）
+            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.name());
 
-            String fileName = URLEncoder.encode("完了済みタスク一覧.csv", StandardCharsets.UTF_8.name());
-
+            // HTTPヘッダー（ブラウザへの指示書）を作る
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + fileName);
+            // 「これは添付ファイル（attachment）として扱ってね」という指示（「filename*=」でエンコードされたファイル名を指定）
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName);
+            // 「中身の種類はCSVですよ」という指示
             headers.setContentType(MediaType.parseMediaType("text/csv; charset=UTF-8"));
 
+            // 中身と指示書をセットにして「OK（200番）」で返す
             return new ResponseEntity<>(csvData, headers, HttpStatus.OK);
-
+            
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
