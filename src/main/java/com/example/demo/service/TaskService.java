@@ -80,32 +80,6 @@ public class TaskService {
 		taskMapper.update(task);
 	}
 	
-	//タスク更新時に、フォームに入力されている完了日と期限に応じたステータスを返すメソッド
-	private int determineStatus(LocalDate completedDate, LocalDate deadline) {
-		
-		LocalDate today = LocalDate.now();
-		
-		//完了日が設定されている場合
-		if (completedDate != null) {
-			//期限が設定されていて、かつ「完了日」が「期限」を過ぎている場合
-			if (deadline != null && completedDate.isAfter(deadline)) {
-				return AppConst.TaskStatus.EXPIRED_COMPLETED; //期限切れ完了 
-			}
-			//それ以外は通常の「完了」
-			return AppConst.TaskStatus.COMPLETED; //完了
-		}
-		
-		//完了日が設定されていない場合
-		else {
-			//期限が設定されていて、かつ「期限」が「今日」より前の場合
-			if (deadline != null && deadline.isBefore(today)) {
-				return AppConst.TaskStatus.EXPIRED; //期限切れ
-			}
-			//それ以外は「未完了」
-			return AppConst.TaskStatus.INCOMPLETE; //未完了
-		}
-	}
-	
 	@Transactional(readOnly = false)
 	public void updateStatusToExpired(int userId) {
 		taskMapper.updateStatusToExpired(userId, AppConst.TaskStatus.INCOMPLETE, AppConst.TaskStatus.EXPIRED);
@@ -170,6 +144,32 @@ public class TaskService {
 
         return addBomToCsv(sb.toString());
     }
+    
+    //タスク更新時に、フォームに入力されている完了日と期限に応じたステータスを返すメソッド
+  	private int determineStatus(LocalDate completedDate, LocalDate deadline) {
+  		
+  		LocalDate today = LocalDate.now();
+  		
+  		//完了日が設定されている場合
+  		if (completedDate != null) {
+  			//期限が設定されていて、かつ「完了日」が「期限」を過ぎている場合
+  			if (deadline != null && completedDate.isAfter(deadline)) {
+  				return AppConst.TaskStatus.EXPIRED_COMPLETED; //期限切れ完了 
+  			}
+  			//それ以外は通常の「完了」
+  			return AppConst.TaskStatus.COMPLETED; //完了
+  		}
+  		
+  		//完了日が設定されていない場合
+  		else {
+  			//期限が設定されていて、かつ「期限」が「今日」より前の場合
+  			if (deadline != null && deadline.isBefore(today)) {
+  				return AppConst.TaskStatus.EXPIRED; //期限切れ
+  			}
+  			//それ以外は「未完了」
+  			return AppConst.TaskStatus.INCOMPLETE; //未完了
+  		}
+  	}
     
     // 文字列をBOM付きバイト配列に変換する処理
     private byte[] addBomToCsv(String csvContent) {
