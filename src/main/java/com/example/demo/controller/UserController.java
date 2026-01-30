@@ -133,6 +133,11 @@ public class UserController {
 	    if (!isAdmin && !isMyself) {
 	        return "error/403";
 	    }
+	    
+	    if (userService.checkMailAddress(form.getMailAddress())) {
+			//メールアドレスが重複していた場合、html側でフィールド名がmailAddressのものに対してエラーメッセージをセット
+			result.rejectValue("mailAddress", "E0008", "{E0008}");	//①フィールド名, ②メッセージコード, ③メッセージ内容
+		}
 
 	    if (result.hasErrors()) {
 			//フォワード処理：リクエストを飛ばすのではなく、create-user.htmlというテンプレートを使って画面を作りなおす

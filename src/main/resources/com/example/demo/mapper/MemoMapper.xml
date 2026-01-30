@@ -44,12 +44,23 @@
 			UPDATE
 					memos
 			SET
-					content = #{content}
+					content = #{content},
+					updated_at = CURRENT_TIMESTAMP
 			WHERE
 					memo_id = #{memoId}
 			AND
 					user_id = #{userId}
 		
 		</update>
+		
+		<delete id="deleteMemoWithUser">
+    	
+    	
+    		DELETE FROM
+    				memos
+    		WHERE
+    				user_id = #{userId}
+    		
+    	</delete>
 
 </mapper>

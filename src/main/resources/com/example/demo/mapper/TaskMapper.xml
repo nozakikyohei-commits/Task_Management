@@ -150,7 +150,7 @@
 					AND t.status = #{form.status}
 				</if>
 				<if test="form.completedDate != null">
-					AND t.completed_date &lt; #{form.completedDate}
+					AND t.completed_date = #{form.completedDate}
 				</if>
 				<if test="form.userName != null">
 					AND u.name LIKE CONCAT('%', #{form.userName}, '%')
@@ -165,7 +165,7 @@
 			    
 			    <if test="order == 'asc'">ASC</if>
 			    <if test="order == 'desc'">DESC</if>
-					,t.task_id DESC
+					,t.task_id
 		
 		</select>
 		
@@ -197,7 +197,8 @@
 					importance = #{importance},
 					deadline = #{deadline},
 					status = #{status},
-					completed_date = #{completedDate}
+					completed_date = #{completedDate},
+					updated_at = CURRENT_TIMESTAMP
 			WHERE
 					task_id = #{taskId}
 			AND
@@ -210,7 +211,8 @@
     		UPDATE
     				tasks
     		SET
-    				status = #{expired}
+    				status = #{expired},
+    				updated_at = CURRENT_TIMESTAMP
     		WHERE
     				user_id = #{userId}
     		AND
@@ -226,6 +228,7 @@
     				tasks
     		SET
     				completed_date = CURRENT_DATE,
+    				updated_at = CURRENT_TIMESTAMP,
     				status = CASE
     			WHEN
     				deadline &lt; CURRENT_DATE THEN #{expiredCompleted}
@@ -246,6 +249,7 @@
     				tasks
     		SET
     				completed_date = NULL,
+    				updated_at = CURRENT_TIMESTAMP,
     				status = CASE
     			WHEN
     				deadline &lt; CURRENT_DATE THEN #{expired}
@@ -268,6 +272,16 @@
     		WHERE
     				task_id = #{taskId}
     		AND
+    				user_id = #{userId}
+    		
+    	</delete>
+    	
+    	<delete id="deleteTaskWithUser">
+    	
+    	
+    		DELETE FROM
+    				tasks
+    		WHERE
     				user_id = #{userId}
     		
     	</delete>

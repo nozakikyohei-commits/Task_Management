@@ -13,5 +13,7 @@ public interface MemoMapper {
 	void create(int userId);
 	
 	void update(@Param("content") String content, @Param("memoId") int memoId, @Param("userId") int userId);
+	
+	void deleteMemoWithUser(int userId);
 
 }

@@ -10,6 +10,7 @@ import com.example.demo.entity.User;
 import com.example.demo.form.EditUserForm;
 import com.example.demo.form.RegistUserForm;
 import com.example.demo.mapper.MemoMapper;
+import com.example.demo.mapper.TaskMapper;
 import com.example.demo.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ public class UserService {
 	private final UserMapper userMapper;
 	
 	private final MemoMapper memoMapper;
+	
+	private final TaskMapper taskMapper;
 	
 	//フォームに入力されたメールアドレスが既に使用されたものであるかを確認するメソッド
 	public boolean checkMailAddress(String mailAddress) {
@@ -87,6 +90,8 @@ public class UserService {
 	@Transactional(readOnly = false)
 	public void delete(int userId) {
 		userMapper.delete(userId);
+		taskMapper.deleteTaskWithUser(userId);
+		memoMapper.deleteMemoWithUser(userId);
 	}
 
 }

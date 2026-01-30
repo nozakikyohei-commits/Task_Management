@@ -9,7 +9,7 @@ public class PasswordGenerator {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         // 2. 暗号化したいパスワード（平文）
-        String rawPassword = "sample";
+        String rawPassword = "567@89";
 
         // 3. 暗号化（ハッシュ化）を実行
         String encodedPassword = encoder.encode(rawPassword);

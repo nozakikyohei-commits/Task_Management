@@ -70,5 +70,7 @@ public interface TaskMapper {
 			@Param("taskId") int taskId,
 			@Param("userId") int userId
 	);
+	
+	void deleteTaskWithUser(int userId);
 
 }
